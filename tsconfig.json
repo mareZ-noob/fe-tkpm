@@ -1,0 +1,22 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/assets/*": ["./src/assets/*"],
+      "@/configs/*": ["./src/configs/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/interfaces/*": ["./src/interfaces/*"],
+      "@/components/*": ["./src/views/components/*"],
+      "@/layouts/*": ["./src/views/layouts/*"],
+      "@/pages/*": ["./src/views/pages/*"],
+    }
+  },
+}
