@@ -23,66 +23,79 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
 const AppRoutes: React.FC = () => {
 	return (
-		<>
-			<div>
-				<Routes>
-					<Route path="*" element={<NotFoundPage />} />
-					<Route path={Path.root.index} element={<WelcomePage />} />
+		<div>
+			<Routes>
+				<Route path="*" element={<NotFoundPage />} />
+				<Route path={Path.root.index} element={<WelcomePage />} />
 
-					<Route path={Path.login.index} element={<LoginPage />} />
-					<Route path={Path.register.index} element={<RegisterPage />} />
+				<Route path={Path.login.index} element={<LoginPage />} />
+				<Route path={Path.register.index} element={<RegisterPage />} />
 
-					<Route element={<NavigationLayout />}>
-						<Route path={Path.user.outlets.dashboard} element={<DashboardPage />} />
-						<Route path={Path.user.outlets.profile} element={<ProfilePage />} />
-						<Route path={Path.user.outlets.videos} element={<VideosPage />} />
-						<Route path={Path.user.outlets.files} element={<FilesPage />} />
-						<Route path={Path.user.outlets.create} element={<CreatePage />} />
+				<Route element={<NavigationLayout />}>
+					<Route
+						path={Path.user.outlets.dashboard}
+						element={<DashboardPage />}
+					/>
+					<Route
+						path={Path.user.outlets.profile}
+						element={<ProfilePage />}
+					/>
+					<Route
+						path={Path.user.outlets.videos}
+						element={<VideosPage />}
+					/>
+					<Route
+						path={Path.user.outlets.files}
+						element={<FilesPage />}
+					/>
+					<Route
+						path={Path.user.outlets.create}
+						element={<CreatePage />}
+					/>
 
-						<Route
-							path="/dashboard"
-							element={
-								<ProtectedRoute>
-									<DashboardPage />
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="/profile"
-							element={
-								<ProtectedRoute>
-									<ProfilePage />
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="/videos"
-							element={
-								<ProtectedRoute>
-									<VideosPage />
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="/files"
-							element={
-								<ProtectedRoute>
-									<FilesPage />
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="/create"
-							element={
-								<ProtectedRoute>
-									<CreatePage />
-								</ProtectedRoute>
-							}
-						/>
-					</Route>
-				</Routes>
-			</div>
-		</>
+					<Route
+						path="/dashboard"
+						element={
+							<ProtectedRoute>
+								<DashboardPage />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/profile"
+						element={
+							<ProtectedRoute>
+								<ProfilePage />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/videos"
+						element={
+							<ProtectedRoute>
+								<VideosPage />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/files"
+						element={
+							<ProtectedRoute>
+								<FilesPage />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/create"
+						element={
+							<ProtectedRoute>
+								<CreatePage />
+							</ProtectedRoute>
+						}
+					/>
+				</Route>
+			</Routes>
+		</div>
 	);
 };
 export default AppRoutes;

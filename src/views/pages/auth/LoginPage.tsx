@@ -1,10 +1,19 @@
-const LoginPage: React.FC = () => {
-	return (
-		<div className="flex flex-col items-center justify-center h-screen">
-			<h1 className="text-4xl font-bold">Login</h1>
-			<p className="text-lg">This is a login page</p>
-		</div>
-	);
+import LoginForm from "@/components/login-form"
+import VideoFeatures from "@/components/video-features"
+
+export default function LoginPage() {
+  return (
+    <main className="min-h-screen flex bg-gray-50">
+      {/* Video features takes 30% of the screen */}
+      <div className="w-[30%] h-screen">
+        <VideoFeatures />
+      </div>
+
+      {/* Login form centered in the remaining 70% */}
+      <div className="w-[70%] h-screen flex items-center justify-center">
+        <LoginForm />
+      </div>
+    </main>
+  )
 }
 
-export default LoginPage;
