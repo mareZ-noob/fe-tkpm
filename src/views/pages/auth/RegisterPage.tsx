@@ -1,19 +1,19 @@
-import RegisterForm from "@/components/register-form"
-import VideoFeatures from "@/components/video-features"
+import RegisterForm from "@/components/form/RegisterForm"
+import VideoFeatures from "@/components/feature/VideoVeature"
 
 export default function RegisterPage() {
-  return (
-    <main className="min-h-screen flex bg-gray-50">
-      {/* Video features takes 30% of the screen */}
-      <div className="w-[30%] h-screen">
-        <VideoFeatures />
-      </div>
+	return (
+		<main className="min-h-screen flex bg-gray-50">
+			{/* Video features takes 30% of the screen */}
+			<div className="w-[30%] h-screen">
+				<VideoFeatures />
+			</div>
 
-      {/* Login form centered in the remaining 70% */}
-      <div className="w-[70%] h-screen flex items-center justify-center">
-        <RegisterForm />
-      </div>
-    </main>
-  )
+			{/* Login form centered in the remaining 70% */}
+			<div className="w-[70%] h-screen flex items-center justify-center">
+				<RegisterForm />
+			</div>
+		</main>
+	)
 }
 

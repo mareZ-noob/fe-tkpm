@@ -16,7 +16,7 @@ export default function RegisterForm() {
 	const [message, setMessage] = useState({ type: "", text: "" });
 
 	const validateInputs = () => {
-		let newErrors: { [key: string]: string } = {};
+		const newErrors: { [key: string]: string } = {};
 		if (!username.trim()) newErrors.username = "Username is required";
 		if (!email.includes("@")) newErrors.email = "Invalid email format";
 		if (password.length < 6)
@@ -46,9 +46,9 @@ export default function RegisterForm() {
 					type: "success",
 					text: "Register successful! Redirecting...",
 				});
-                setTimeout(() => {
-                    window.location.href = "/login";
-                  }, 3000);
+				setTimeout(() => {
+					window.location.href = "/login";
+				}, 3000);
 			} else {
 				setMessage({
 					type: "error",
@@ -57,12 +57,13 @@ export default function RegisterForm() {
 				setErrors({ form: data.message || "Registration failed" });
 			}
 		} catch (error) {
+			console.error("An unexpected error happened:", error);
 			setMessage({
 				type: "error",
 				text: "Server error. Please try again later.",
 			});
 			setErrors({ form: "Something went wrong. Please try again." });
-		} 
+		}
 	};
 
 	return (
@@ -71,11 +72,11 @@ export default function RegisterForm() {
 				Create Account
 			</h2>
 
-            {message.text && (
-          <div className={`text-sm p-2 rounded-md text-center ${message.type === "success" ? "bg-green-200 text-green-700" : "bg-red-200 text-red-700"}`}>
-            {message.text}
-          </div>
-        )}
+			{message.text && (
+				<div className={`text-sm p-2 rounded-md text-center ${message.type === "success" ? "bg-green-200 text-green-700" : "bg-red-200 text-red-700"}`}>
+					{message.text}
+				</div>
+			)}
 			<form onSubmit={handleSubmit} className="space-y-5">
 				<div>
 					<input
@@ -83,11 +84,10 @@ export default function RegisterForm() {
 						placeholder="Username"
 						value={username}
 						onChange={(e) => setUsername(e.target.value)}
-						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 ${
-							errors.username
+						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 ${errors.username
 								? "border-red-500"
 								: "border-gray-300"
-						}`}
+							}`}
 					/>
 					{errors.username && (
 						<p className="text-red-500 text-sm">
@@ -102,9 +102,8 @@ export default function RegisterForm() {
 						placeholder="Email"
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
-						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 ${
-							errors.email ? "border-red-500" : "border-gray-300"
-						}`}
+						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 ${errors.email ? "border-red-500" : "border-gray-300"
+							}`}
 					/>
 					{errors.email && (
 						<p className="text-red-500 text-sm">{errors.email}</p>
@@ -117,11 +116,10 @@ export default function RegisterForm() {
 						placeholder="Password"
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 pr-10 ${
-							errors.password
+						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 pr-10 ${errors.password
 								? "border-red-500"
 								: "border-gray-300"
-						}`}
+							}`}
 					/>
 					<button
 						type="button"
@@ -147,11 +145,10 @@ export default function RegisterForm() {
 						placeholder="Confirm Password"
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
-						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 pr-10 ${
-							errors.confirmPassword
+						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 pr-10 ${errors.confirmPassword
 								? "border-red-500"
 								: "border-gray-300"
-						}`}
+							}`}
 					/>
 					<button
 						type="button"
