@@ -12,29 +12,34 @@ export default function LoginForm() {
 		e.preventDefault();
 		setMessage({ type: "", text: "" });
 		setLoading(true);
-
+	  
 		try {
-			const response = await fetch("http://localhost:5000/auth/login", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ username, password }),
-				credentials: "include",
-			});
-
-			const data = await response.json();
-			if (response.ok) {
-				setMessage({ type: "success", text: "Login successful! Redirecting..." });
-				setTimeout(() => (window.location.href = "/"), 2000);
-			} else {
-				setMessage({ type: "error", text: data.message || "Invalid credentials" });
-			}
+		  const response = await fetch("http://localhost:5000/auth/login", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ username, password }),
+			credentials: "include",
+		  });
+	  
+		  const data = await response.json();
+		  console.log("Login Response Data:", data); // Debug response từ server
+	  
+		  if (response.ok) {
+			localStorage.setItem("jwtToken", data.access_token); // Lưu token vào localStorage
+	  
+			setMessage({ type: "success", text: "Login successful! Redirecting..." });
+			setTimeout(() => (window.location.href = "/"), 2000);
+		  } else {
+			setMessage({ type: "error", text: data.message || "Invalid credentials" });
+		  }
 		} catch (error) {
-			console.error("An unexpected error happened:", error);
-			setMessage({ type: "error", text: "Server error. Please try again later." });
+		  console.error("An unexpected error happened:", error);
+		  setMessage({ type: "error", text: "Server error. Please try again later." });
 		} finally {
-			setLoading(false);
+		  setLoading(false);
 		}
-	};
+	  };
+	  
 
 	return (
 		<div className="w-full max-w-md bg-pink-50 p-8 rounded-lg shadow-md">
