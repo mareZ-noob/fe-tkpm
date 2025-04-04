@@ -19,7 +19,7 @@ export default function PromptStep({ setTextContent, onNext, triggerFetchSummary
     setLoading(true);
     setError("");
 
-    const token = localStorage.getItem("jwtToken");
+    const token = localStorage.getItem("access_token");
 
     try {
       const response = await fetch("http://localhost:5000/create/prompt", {
@@ -36,7 +36,7 @@ export default function PromptStep({ setTextContent, onNext, triggerFetchSummary
         setTextContent(data.summary);
         onNext();
       } else {
-        setError(data.error || "Failed to fetch summary.");
+        setError(data.msg || "Failed to fetch summary.");
       }
     } catch (err) {
       setError("Something went wrong.");

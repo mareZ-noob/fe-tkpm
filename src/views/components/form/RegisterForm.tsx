@@ -3,6 +3,7 @@
 import type React from "react";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import AuthService from "@/services/auth/AuthService";
 
 export default function RegisterForm() {
 	const [username, setUsername] = useState("");
@@ -34,14 +35,13 @@ export default function RegisterForm() {
 		if (!validateInputs()) return;
 
 		try {
-			const response = await fetch("http://localhost:5000/register", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ username, email, password }),
+			const data = await AuthService.register({
+				username,
+				email,
+				password,
 			});
 
-			const data = await response.json();
-			if (response.ok) {
+			if (data.id) {
 				setMessage({
 					type: "success",
 					text: "Register successful! Redirecting...",
@@ -52,9 +52,9 @@ export default function RegisterForm() {
 			} else {
 				setMessage({
 					type: "error",
-					text: data.message || "Invalid credentials",
+					text: data.msg || "Invalid credentials",
 				});
-				setErrors({ form: data.message || "Registration failed" });
+				setErrors({ form: data.msg || "Registration failed" });
 			}
 		} catch (error) {
 			console.error("An unexpected error happened:", error);
@@ -85,8 +85,8 @@ export default function RegisterForm() {
 						value={username}
 						onChange={(e) => setUsername(e.target.value)}
 						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 ${errors.username
-								? "border-red-500"
-								: "border-gray-300"
+							? "border-red-500"
+							: "border-gray-300"
 							}`}
 					/>
 					{errors.username && (
@@ -117,8 +117,8 @@ export default function RegisterForm() {
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 pr-10 ${errors.password
-								? "border-red-500"
-								: "border-gray-300"
+							? "border-red-500"
+							: "border-gray-300"
 							}`}
 					/>
 					<button
@@ -146,8 +146,8 @@ export default function RegisterForm() {
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
 						className={`w-full bg-transparent border-b px-0 h-10 placeholder-gray-500 text-gray-800 focus:outline-none focus:border-pink-500 pr-10 ${errors.confirmPassword
-								? "border-red-500"
-								: "border-gray-300"
+							? "border-red-500"
+							: "border-gray-300"
 							}`}
 					/>
 					<button
@@ -186,7 +186,7 @@ export default function RegisterForm() {
 
 			<p className="text-sm text-center text-pink-800 mt-6">
 				Already have an account?{" "}
-				<a href="/" className="text-pink-600 hover:underline">
+				<a href="/login" className="text-pink-600 hover:underline">
 					Log in
 				</a>
 			</p>

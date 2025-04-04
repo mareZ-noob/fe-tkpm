@@ -11,14 +11,20 @@ import DashboardPage from "@/pages/dashboard/DashboardPage";
 import VideosPage from "@/pages/videos/VideosPage";
 import FilesPage from "@/pages/files/FilesPage";
 import CreatePage from "@/pages/create/CreatePage";
+import AuthService from "@/services/auth/AuthService";
 
 interface ProtectedRouteProps {
 	children: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-	const token = localStorage.getItem("token");
-	return token ? children : <Navigate to={Path.root.index} />;
+	const isAuthenticated = AuthService.getCurrentUser();
+
+	return isAuthenticated ? (
+		<>{children}</>
+	) : (
+		<Navigate to={Path.login.index} />
+	);
 };
 
 const AppRoutes: React.FC = () => {
@@ -32,7 +38,7 @@ const AppRoutes: React.FC = () => {
 				<Route path={Path.register.index} element={<RegisterPage />} />
 
 				<Route element={<NavigationLayout />}>
-					<Route
+					{/* <Route
 						path={Path.user.outlets.dashboard}
 						element={<DashboardPage />}
 					/>
@@ -51,10 +57,10 @@ const AppRoutes: React.FC = () => {
 					<Route
 						path={Path.user.outlets.create}
 						element={<CreatePage />}
-					/>
+					/> */}
 
 					<Route
-						path="/dashboard"
+						path={Path.user.outlets.dashboard}
 						element={
 							<ProtectedRoute>
 								<DashboardPage />
@@ -62,7 +68,7 @@ const AppRoutes: React.FC = () => {
 						}
 					/>
 					<Route
-						path="/profile"
+						path={Path.user.outlets.profile}
 						element={
 							<ProtectedRoute>
 								<ProfilePage />
@@ -70,7 +76,7 @@ const AppRoutes: React.FC = () => {
 						}
 					/>
 					<Route
-						path="/videos"
+						path={Path.user.outlets.videos}
 						element={
 							<ProtectedRoute>
 								<VideosPage />
@@ -78,7 +84,7 @@ const AppRoutes: React.FC = () => {
 						}
 					/>
 					<Route
-						path="/files"
+						path={Path.user.outlets.files}
 						element={
 							<ProtectedRoute>
 								<FilesPage />
@@ -86,7 +92,7 @@ const AppRoutes: React.FC = () => {
 						}
 					/>
 					<Route
-						path="/create"
+						path={Path.user.outlets.create}
 						element={
 							<ProtectedRoute>
 								<CreatePage />

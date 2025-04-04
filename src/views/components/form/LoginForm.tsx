@@ -1,5 +1,6 @@
 ﻿import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import AuthService from "@/services/auth/AuthService";
 
 export default function LoginForm() {
 	const [username, setUsername] = useState("");
@@ -12,25 +13,18 @@ export default function LoginForm() {
 		e.preventDefault();
 		setMessage({ type: "", text: "" });
 		setLoading(true);
-	  
+
 		try {
-		  const response = await fetch("http://localhost:5000/auth/login", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ username, password }),
-			credentials: "include",
-		  });
-	  
-		  const data = await response.json();
-		  console.log("Login Response Data:", data); // Debug response từ server
-	  
-		  if (response.ok) {
-			localStorage.setItem("jwtToken", data.access_token); // Lưu token vào localStorage
-	  
+		  const data = await AuthService.login(username, password);
+		  console.log("Login Response Data:", data);
+
+		  if (data.access_token) {
+			localStorage.setItem("access_token", data.access_token);
+
 			setMessage({ type: "success", text: "Login successful! Redirecting..." });
 			setTimeout(() => (window.location.href = "/"), 2000);
 		  } else {
-			setMessage({ type: "error", text: data.message || "Invalid credentials" });
+			setMessage({ type: "error", text: data.msg || "Invalid credentials" });
 		  }
 		} catch (error) {
 		  console.error("An unexpected error happened:", error);
@@ -39,7 +33,7 @@ export default function LoginForm() {
 		  setLoading(false);
 		}
 	  };
-	  
+
 
 	return (
 		<div className="w-full max-w-md bg-pink-50 p-8 rounded-lg shadow-md">
