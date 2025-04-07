@@ -79,6 +79,13 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 				footer={null}
 				width={300}
 				className={clsx(isDarkMode && 'ant-modal-dark-theme')}
+				style={{
+					position: 'absolute',
+					left: '4rem',
+					bottom: '4rem',
+					right: 'auto',
+					top: 'auto',
+				}}
 				styles={{
 					content: {
 						background: isDarkMode ? '#101828' : '#ffffff',
@@ -86,6 +93,7 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 					header: {
 						background: isDarkMode ? '#101828' : '#ffffff',
 						borderBottom: isDarkMode ? '1px solid #364153' : '1px solid #e5e7eb',
+						paddingBottom: '0.5rem',
 					},
 				}}
 			>
@@ -134,6 +142,13 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 				footer={null}
 				width={300}
 				className={clsx(isDarkMode && 'ant-modal-dark-theme')}
+				style={{
+					position: 'absolute',
+					left: '4rem',
+					bottom: '4rem',
+					right: 'auto',
+					top: 'auto',
+				}}
 				styles={{
 					content: {
 						background: isDarkMode ? '#101828' : '#ffffff',
@@ -141,6 +156,7 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 					header: {
 						background: isDarkMode ? '#101828' : '#ffffff',
 						borderBottom: isDarkMode ? '1px solid #364153' : '1px solid #e5e7eb',
+						paddingBottom: '0.5rem',
 					},
 				}}
 			>

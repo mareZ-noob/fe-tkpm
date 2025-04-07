@@ -14,18 +14,6 @@
   /* --font-app: "Work Sans", sans-serif; */
 }
 
-.ant-modal {
-  position: absolute;
-  left: 4rem;
-  bottom: 4rem;
-  right: auto;
-  top: auto;
-}
-
-.ant-modal-title {
-  padding-bottom: 0.5rem;
-}
-
 .ant-modal-dark-theme .ant-modal-title {
   color: #ffffff;
 }

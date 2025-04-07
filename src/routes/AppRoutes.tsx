@@ -9,7 +9,7 @@ import RegisterPage from "@/pages/auth/RegisterPage";
 import NavigationLayout from "@/layouts/NavigationLayout";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import VideosPage from "@/pages/videos/VideosPage";
-import FilesPage from "@/pages/files/FilesPage";
+import FilesPage from "@/pages/files/DocumentPage";
 import CreatePage from "@/pages/create/CreatePage";
 import AuthService from "@/services/auth/AuthService";
 
@@ -19,6 +19,9 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 	const isAuthenticated = AuthService.getCurrentUser();
+
+	// For testing purposes, you can uncomment the line below to simulate an authenticated user
+	// const isAuthenticated = true;
 
 	return isAuthenticated ? (
 		<>{children}</>
