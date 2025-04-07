@@ -22,7 +22,7 @@ export default function LoginForm() {
 			localStorage.setItem("access_token", data.access_token);
 
 			setMessage({ type: "success", text: "Login successful! Redirecting..." });
-			setTimeout(() => (window.location.href = "/"), 2000);
+			setTimeout(() => (window.location.href = "/dashboard"), 2000);
 		  } else {
 			setMessage({ type: "error", text: data.msg || "Invalid credentials" });
 		  }
