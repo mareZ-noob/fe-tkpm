@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Modal, Button, Menu, Divider } from 'antd';
+import { Modal, Button, Menu } from 'antd';
 import { LogOut, Sun, Moon, Monitor, ChevronLeft, SettingsIcon } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme/useTheme';
 import clsx from 'clsx';
 import AuthService from '@/services/auth/AuthService';
+import type { MenuProps } from 'antd'; // Import MenuProps for typing
 
 interface ThemeOption {
 	value: 'light' | 'dark' | 'system';
@@ -48,7 +49,12 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 
 	const handleLogout = () => {
 		handleCloseSettings();
-		AuthService.logout();
+		AuthService.logout().then(() => {
+			localStorage.removeItem('access_token');
+		}
+		).catch((error) => {
+			console.error('Logout error:', error);
+		});
 		window.location.href = '/';
 	};
 
@@ -59,7 +65,42 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 	};
 
 	// Determine if dark mode is active
-	const isDarkMode = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+	const isDarkMode =
+		theme === 'dark' ||
+		(theme === 'system' &&
+			typeof window !== 'undefined' &&
+			window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+	const settingsMenuItems: MenuProps['items'] = [
+		{
+			key: 'appearance',
+			label: 'Switch Appearance',
+			icon: <Sun size={18} />,
+			onClick: handleOpenAppearance,
+			className: 'flex items-center',
+		},
+		{
+			type: 'divider' as const,
+			style: { margin: '16px 0' },
+			className: clsx(isDarkMode ? 'bg-gray-700' : 'bg-gray-200'),
+		},
+		{
+			key: 'logout',
+			label: 'Logout',
+			icon: <LogOut size={18} />,
+			onClick: handleLogout,
+			danger: true,
+			className: 'flex items-center',
+		},
+	];
+
+	const appearanceMenuItems: MenuProps['items'] = themeOptions.map((option) => ({
+		key: option.value,
+		label: option.label,
+		icon: option.icon,
+		onClick: () => handleThemeChange(option.value),
+		className: 'flex items-center',
+	}));
 
 	return (
 		<>
@@ -69,8 +110,6 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 				className="flex items-center p-3 w-full rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
 			>
 				<SettingsIcon size={size} className={clsx({ 'mr-4': showLabel, 'mr-0': !showLabel })} />
-
-				{/* Show label when expanded */}
 				{showLabel && <span>Settings</span>}
 			</button>
 
@@ -104,27 +143,9 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 					mode="vertical"
 					className={clsx('border-none', isDarkMode && 'ant-menu-dark')}
 					theme={isDarkMode ? 'dark' : 'light'}
-					selectedKeys={[""]}
-				>
-					<Menu.Item
-						key="appearance"
-						onClick={handleOpenAppearance}
-						icon={<Sun size={18} />}
-						className={'flex items-center'}
-					>
-						Switch Appearance
-					</Menu.Item>
-					<Divider className={clsx('my-2', isDarkMode ? 'bg-gray-700' : 'bg-gray-200')} />
-					<Menu.Item
-						key="logout"
-						onClick={handleLogout}
-						icon={<LogOut size={18} />}
-						danger
-						className="flex items-center"
-					>
-						Logout
-					</Menu.Item>
-				</Menu>
+					selectedKeys={['']}
+					items={settingsMenuItems}
+				/>
 			</Modal>
 
 			{/* Appearance Modal */}
@@ -135,7 +156,7 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 							type="text"
 							icon={<ChevronLeft size={18} color={isDarkMode ? 'rgba(255, 255, 255, 0.45)' : '#000000'} />}
 							onClick={handleCloseAppearance}
-							className={'mr-2'}
+							className="mr-2"
 						/>
 						<span>Appearance</span>
 					</div>
@@ -168,18 +189,8 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 					className={clsx('border-none', isDarkMode && 'ant-menu-dark')}
 					theme={isDarkMode ? 'dark' : 'light'}
 					selectedKeys={[theme]}
-				>
-					{themeOptions.map((option) => (
-						<Menu.Item
-							key={option.value}
-							icon={option.icon}
-							onClick={() => handleThemeChange(option.value)}
-							className={'flex items-center'}
-						>
-							{option.label}
-						</Menu.Item>
-					))}
-				</Menu>
+					items={appearanceMenuItems}
+				/>
 			</Modal>
 		</>
 	);

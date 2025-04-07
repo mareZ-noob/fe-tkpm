@@ -21,7 +21,6 @@ class AuthService {
 	logout = async (): Promise<void> => {
 		try {
 			await api.post("/auth/logout");
-			localStorage.removeItem("access_token");
 		} catch (error) {
 			console.error("Error during logout:", error);
 			throw error;
