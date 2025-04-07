@@ -32,6 +32,7 @@
       "@/components/*": ["./src/views/components/*"],
       "@/layouts/*": ["./src/views/layouts/*"],
       "@/pages/*": ["./src/views/pages/*"],
+      "@/utils/*": ["./src/utils/*"],
     }
   },
   "include": ["src"]

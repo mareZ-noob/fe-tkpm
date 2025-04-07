@@ -13,7 +13,7 @@ const NavigationLayout: React.FC = () => {
 
 	const navItems = [
 		{ to: '/dashboard', icon: <LayoutDashboard size={navIconSize} />, label: 'Dashboard' },
-		{ to: '/files', icon: <FileText size={navIconSize} />, label: 'Documents' },
+		{ to: '/documents', icon: <FileText size={navIconSize} />, label: 'Documents' },
 		{ to: '/create', icon: <PlusSquare size={navIconSize} />, label: 'Create' },
 		{ to: '/videos', icon: <FileVideo size={navIconSize} />, label: 'Videos' },
 		{ to: '/profile', icon: <User size={navIconSize} />, label: 'Profile' }
@@ -68,7 +68,7 @@ const NavigationLayout: React.FC = () => {
 			</aside>
 
 			{/* Bottom navigation for mobile */}
-			<div className="fixed bottom-0 left-0 right-0 md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-10">
+			<div className="fixed bottom-0 left-0 right-0 md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-20">
 				<div className="flex justify-around px-2 py-3">
 					{navItems.slice(0, 5).map((item) => (
 						<NavigationButton

@@ -3,6 +3,7 @@ import { Modal, Button, Menu, Divider } from 'antd';
 import { LogOut, Sun, Moon, Monitor, ChevronLeft, SettingsIcon } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme/useTheme';
 import clsx from 'clsx';
+import AuthService from '@/services/auth/AuthService';
 
 interface ThemeOption {
 	value: 'light' | 'dark' | 'system';
@@ -47,6 +48,8 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 
 	const handleLogout = () => {
 		handleCloseSettings();
+		AuthService.logout();
+		window.location.href = '/';
 	};
 
 	const handleThemeChange = (theme: 'light' | 'dark' | 'system') => {

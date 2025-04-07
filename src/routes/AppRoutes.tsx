@@ -9,9 +9,23 @@ import RegisterPage from "@/pages/auth/RegisterPage";
 import NavigationLayout from "@/layouts/NavigationLayout";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import VideosPage from "@/pages/videos/VideosPage";
-import FilesPage from "@/pages/files/DocumentPage";
+import FilesPage from "@/pages/documents/DocumentPage";
 import CreatePage from "@/pages/create/CreatePage";
 import AuthService from "@/services/auth/AuthService";
+
+interface PublicRouteProps {
+	children: React.ReactNode;
+}
+
+const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
+	const isAuthenticated = AuthService.getCurrentUser();
+
+	return isAuthenticated ? (
+		<Navigate to={Path.user.outlets.dashboard} replace />
+	) : (
+		<>{children}</>
+	);
+};
 
 interface ProtectedRouteProps {
 	children: React.ReactNode;
@@ -37,31 +51,24 @@ const AppRoutes: React.FC = () => {
 				<Route path="*" element={<NotFoundPage />} />
 				<Route path={Path.root.index} element={<WelcomePage />} />
 
-				<Route path={Path.login.index} element={<LoginPage />} />
-				<Route path={Path.register.index} element={<RegisterPage />} />
+				<Route
+					path={Path.login.index}
+					element={
+						<PublicRoute>
+							<LoginPage />
+						</PublicRoute>
+					}
+				/>
+				<Route
+					path={Path.register.index}
+					element={
+						<PublicRoute>
+							<RegisterPage />
+						</PublicRoute>
+					}
+				/>
 
 				<Route element={<NavigationLayout />}>
-					{/* <Route
-						path={Path.user.outlets.dashboard}
-						element={<DashboardPage />}
-					/>
-					<Route
-						path={Path.user.outlets.profile}
-						element={<ProfilePage />}
-					/>
-					<Route
-						path={Path.user.outlets.videos}
-						element={<VideosPage />}
-					/>
-					<Route
-						path={Path.user.outlets.files}
-						element={<FilesPage />}
-					/>
-					<Route
-						path={Path.user.outlets.create}
-						element={<CreatePage />}
-					/> */}
-
 					<Route
 						path={Path.user.outlets.dashboard}
 						element={
@@ -87,7 +94,7 @@ const AppRoutes: React.FC = () => {
 						}
 					/>
 					<Route
-						path={Path.user.outlets.files}
+						path={Path.user.outlets.documents}
 						element={
 							<ProtectedRoute>
 								<FilesPage />

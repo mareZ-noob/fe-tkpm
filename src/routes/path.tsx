@@ -12,7 +12,7 @@ export const Path = {
 		index: "/",
 		outlets: {
 			dashboard: "/dashboard",
-			files: "/files",
+			documents: "/documents",
 			videos: "/videos",
 			profile: "/profile",
 			create: "/create",

@@ -22,7 +22,7 @@ class UserService {
 			console.error("Error updating user profile:", error);
 			throw error;
 		}
-	}
+	};
 }
 
 export default new UserService();
