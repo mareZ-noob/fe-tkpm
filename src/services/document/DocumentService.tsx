@@ -5,7 +5,6 @@ class DocumentService {
 	getDocuments = async (): Promise<DocumentList> => {
 		try {
 			const response = await api.get(`/documents`);
-			console.log("Documents fetched successfully:", response.data);
 			return response.data;
 		} catch (error) {
 			console.error("Error fetching documents:", error);

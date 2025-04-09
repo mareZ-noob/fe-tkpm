@@ -47,15 +47,17 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 		setSettingsOpen(true);
 	};
 
-	const handleLogout = () => {
+	const handleLogout = async () => {
 		handleCloseSettings();
-		AuthService.logout().then(() => {
+		try {
+			await AuthService.logout();
 			localStorage.removeItem('access_token');
-		}
-		).catch((error) => {
+			window.location.href = '/';
+		} catch (error) {
 			console.error('Logout error:', error);
-		});
-		window.location.href = '/';
+			localStorage.removeItem('access_token');
+			window.location.href = '/';
+		}
 	};
 
 	const handleThemeChange = (theme: 'light' | 'dark' | 'system') => {

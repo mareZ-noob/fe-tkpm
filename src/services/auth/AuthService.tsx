@@ -21,8 +21,10 @@ class AuthService {
 	logout = async (): Promise<void> => {
 		try {
 			await api.post("/auth/logout");
+			localStorage.removeItem("access_token");
 		} catch (error) {
 			console.error("Error during logout:", error);
+			localStorage.removeItem("access_token");
 			throw error;
 		}
 	};
@@ -37,6 +39,21 @@ class AuthService {
 			return response.data;
 		} catch (error) {
 			console.error("Error during registration:", error);
+			throw error;
+		}
+	};
+
+	changePassword = async (
+		old_password: string,
+		new_password: string
+	): Promise<void> => {
+		try {
+			await api.post("/auth/change-password", {
+				old_password,
+				new_password,
+			});
+		} catch (error) {
+			console.error("Error during password change:", error);
 			throw error;
 		}
 	};
