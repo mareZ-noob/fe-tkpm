@@ -164,6 +164,33 @@ const DocumentPage = () => {
 		</Dropdown>
 	);
 
+	const handleDeleteDocument = async (documentId: string) => {
+		try {
+			await DocumentService.deleteDocument(documentId);
+			setFiles(files.filter(file => file.id !== documentId));
+			closeFile();
+			message.success("Document deleted successfully!");
+		} catch (error) {
+			console.error("Error deleting document:", error);
+			message.error("Failed to delete document");
+		}
+	};
+
+	const handleDuplicateDocument = async (document: BaseDocument) => {
+		try {
+			const duplicatedDocument = await DocumentService.duplicateDocument(document.id, {
+				title: `Copy of ${document.title || "Untitled"}`,
+			});
+
+			setFiles([...files, duplicatedDocument]);
+			message.success("Document duplicated successfully!");
+		} catch (error) {
+			console.error("Error duplicating document:", error);
+			message.error("Failed to duplicate document");
+		}
+	};
+
+
 	return (
 		<PageLayout
 			title="Documents"
@@ -224,6 +251,8 @@ const DocumentPage = () => {
 				onClose={closeFile}
 				onEditToggle={toggleEdit}
 				onSave={handleSave}
+				onDelete={(file) => handleDeleteDocument(file.id)}
+				onDuplicate={(file) => handleDuplicateDocument(file)}
 				form={form}
 				renderTitle={(file) => (
 					<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -238,7 +267,7 @@ const DocumentPage = () => {
 								justifyContent: "center",
 							}}
 						>
-							<FileTextOutlined style={{ fontSize: 14, color: "#1677ff" }} />
+							<FileTextOutlined style={{ fontSize: 14, color: "#722ed1" }} />
 						</div>
 						{file.title || "Untitled"}
 						<Button

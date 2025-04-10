@@ -8,7 +8,7 @@ import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import NavigationLayout from "@/layouts/NavigationLayout";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
-import VideosPage from "@/pages/videos/VideosPage";
+import VideosPage from "@/pages/video/VideoPage";
 import FilesPage from "@/pages/documents/DocumentPage";
 import CreatePage from "@/pages/create/CreatePage";
 import AuthService from "@/services/auth/AuthService";

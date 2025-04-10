@@ -19,3 +19,7 @@ export type DocumentCreate = Pick<
 >;
 
 export type DocumentList = BaseDocument[];
+
+export interface DuplicateDocument {
+	title: string;
+}

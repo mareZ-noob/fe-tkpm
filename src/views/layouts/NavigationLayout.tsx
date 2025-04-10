@@ -43,7 +43,7 @@ const NavigationLayout: React.FC = () => {
 						className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer relative group"
 					>
 						{expanded ? <PanelLeftClose size={30} /> : <PanelRightClose size={30} />}
-						<span className="absolute left-1/2 transform -translate-x-1/6 top-full mt-2 w-max px-2 py-1 text-sm bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
+						<span className="absolute z-30 left-1/2 transform -translate-x-1/6 top-full mt-2 w-max px-2 py-1 text-sm bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
 							{expanded ? 'Close Sidebar' : 'Open Sidebar'}
 						</span>
 					</button>

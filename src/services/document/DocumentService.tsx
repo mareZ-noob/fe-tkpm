@@ -1,5 +1,5 @@
 import api from "@/configs/axios.config";
-import { DocumentCreate, DocumentList, DocumentUpdate } from "@/interfaces/document/DocumentInterface";
+import { BaseDocument, DocumentCreate, DocumentList, DocumentUpdate, DuplicateDocument } from "@/interfaces/document/DocumentInterface";
 
 class DocumentService {
 	getDocuments = async (): Promise<DocumentList> => {
@@ -17,7 +17,6 @@ class DocumentService {
 	): Promise<DocumentCreate> => {
 		try {
 			const response = await api.post(`/documents`, documentData);
-			console.log("Document created successfully:", response.data);
 			return response.data;
 		} catch (error) {
 			console.error("Error creating document:", error);
@@ -35,6 +34,29 @@ class DocumentService {
 			return response.data;
 		} catch (error) {
 			console.error("Error updating document:", error);
+			throw error;
+		}
+	};
+
+	deleteDocument = async (documentId: string): Promise<void> => {
+		try {
+			await api.delete(`/documents/${documentId}`);
+			console.log("Document deleted successfully");
+		} catch (error) {
+			console.error("Error deleting document:", error);
+			throw error;
+		}
+	};
+
+	duplicateDocument = async (
+		documentId: string,
+		documentData: DuplicateDocument
+	): Promise<BaseDocument> => {
+		try {
+			const response = await api.post(`/documents/${documentId}/duplicate`, documentData);
+			return response.data;
+		} catch (error) {
+			console.error("Error duplicating document:", error);
 			throw error;
 		}
 	};

@@ -54,7 +54,7 @@ const ProfilePage: React.FC = () => {
 	const [profileForm] = Form.useForm();
 
 	useEffect(() => {
-		const fetchUserProfile = async () => {
+		const fetchUserProfile = async (retryCount = 0) => {
 			try {
 				setLoading(true);
 				const userData = await UserService.getUserProfile();
@@ -67,10 +67,17 @@ const ProfilePage: React.FC = () => {
 				});
 			} catch (err) {
 				console.error("Error fetching user profile:", err);
-				setError("Failed to fetch user profile");
+
+				if (retryCount < 3) {
+					setTimeout(() => fetchUserProfile(retryCount + 1), 1000);
+					return;
+				}
+
 				message.error("Failed to load profile data");
 			} finally {
-				setLoading(false);
+				if (retryCount === 0 || retryCount === 3) {
+					setLoading(false);
+				}
 			}
 		};
 

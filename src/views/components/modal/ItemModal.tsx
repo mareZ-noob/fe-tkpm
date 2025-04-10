@@ -1,41 +1,52 @@
-// components/ItemModal.tsx
 import React from "react";
-import { Modal, Form, Input, Button, Typography, FormInstance } from "antd";
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { Modal, Form, Input, Button, Typography, FormInstance, Dropdown, Space } from "antd";
+import { EditOutlined, SaveOutlined, EllipsisOutlined, DeleteOutlined, CopyOutlined, ClockCircleOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
-const { Paragraph } = Typography;
+const { Paragraph, Text } = Typography;
 
-interface ItemModalProps<T> {
+interface ItemModalProps<T extends { updated_at: string }> {
 	item: T | null;
 	isEditing: boolean;
 	onClose: () => void;
 	onEditToggle: () => void;
 	onSave: () => void;
+	onDelete?: (item: T) => void;
+	onDuplicate?: (item: T) => void;
 	form: FormInstance;
 	renderTitle: (item: T) => React.ReactNode;
 	renderContent: (item: T) => React.ReactNode;
+	hideEditButton?: boolean;
+	actionName?: string;
+	hideContentField?: boolean;
 }
 
-const ItemModal = <T,>({
+const ItemModal = <T extends { updated_at: string },>({
 	item,
 	isEditing,
 	onClose,
 	onEditToggle,
 	onSave,
+	onDelete,
+	onDuplicate,
 	form,
 	renderTitle,
 	renderContent,
+	hideEditButton = false,
+	actionName = "Continue",
+	hideContentField = false,
 }: ItemModalProps<T>) => {
 	const footer = [
-		<Button
-			key="edit"
-			icon={<EditOutlined />}
-			onClick={onEditToggle}
-			style={{ display: isEditing ? "none" : "inline-flex" }}
-		>
-			Edit
-		</Button>,
+		!hideEditButton && (
+			<Button
+				key="edit"
+				icon={<EditOutlined />}
+				onClick={onEditToggle}
+				style={{ display: isEditing ? "none" : "inline-flex" }}
+			>
+				Edit
+			</Button>
+		),
 		<Button
 			key="continue"
 			type="primary"
@@ -44,7 +55,7 @@ const ItemModal = <T,>({
 			}}
 			style={{ display: isEditing ? "none" : "inline-flex" }}
 		>
-			Continue
+			{actionName}
 		</Button>,
 		<Button
 			key="cancel"
@@ -62,11 +73,17 @@ const ItemModal = <T,>({
 		>
 			Save Changes
 		</Button>,
-	];
+	].filter(Boolean);
+
+	const renderHeader = () => (
+		<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+			<div style={{ flex: 1 }}>{item && !isEditing ? renderTitle(item) : "Edit Item"}</div>
+		</div>
+	);
 
 	return (
 		<Modal
-			title={item && (isEditing ? "Edit Item" : renderTitle(item))}
+			title={renderHeader()}
 			open={item !== null}
 			onCancel={onClose}
 			footer={footer}
@@ -74,28 +91,81 @@ const ItemModal = <T,>({
 			styles={{ body: { padding: isEditing ? "16px 24px" : 0 } }}
 		>
 			{item && (
-				<Form form={form} layout="vertical" style={{ marginTop: isEditing ? 8 : 0 }}>
-					{isEditing ? (
-						<>
-							<Form.Item name="title" label="Title" rules={[{ required: true, message: "Title cannot be empty" }]}>
-								<Input placeholder="Enter title" />
-							</Form.Item>
-							<Form.Item
-								name="content"
-								label="Content"
-								rules={[{ required: true, message: "Content cannot be empty" }]}
-							>
-								<TextArea rows={12} placeholder="Enter content" style={{ resize: "none" }} />
-							</Form.Item>
-						</>
-					) : (
-						<div style={{ maxHeight: "60vh", overflowY: "auto", padding: "24px" }}>
-							<Paragraph style={{ whiteSpace: "pre-wrap", fontSize: 15, lineHeight: 1.6 }}>
-								{renderContent(item)}
-							</Paragraph>
+				<>
+					{!isEditing && (
+						<div style={{
+							display: 'flex',
+							alignItems: 'center',
+							gap: 8,
+							padding: '0 24px 12px',
+							borderBottom: '1px solid #f0f0f0'
+						}}>
 						</div>
 					)}
-				</Form>
+					<Form form={form} layout="vertical" style={{ marginTop: isEditing ? 8 : 0 }}>
+						{isEditing ? (
+							<>
+								<Form.Item name="title" label="Title" rules={[{ required: true, message: "Title cannot be empty" }]}>
+									<Input placeholder="Enter title" />
+								</Form.Item>
+								{!hideContentField && (
+									<Form.Item
+										name="content"
+										label="Content"
+										rules={[{ required: true, message: "Content cannot be empty" }]}
+									>
+										<TextArea rows={12} placeholder="Enter content" style={{ resize: "none" }} />
+									</Form.Item>
+								)}
+							</>
+						) : (
+							<>
+								<div
+									style={{
+										padding: "16px 24px",
+										borderBottom: "1px solid #f0f0f0",
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
+									}}
+								>
+									<Space>
+										<Text type="secondary" style={{ fontSize: 13 }}>
+											<ClockCircleOutlined style={{ marginRight: 4 }} />
+											Last modified: {new Date(item.updated_at).toLocaleString()}
+										</Text>
+									</Space>
+									<Dropdown
+										menu={{
+											items: [
+												{
+													key: "duplicate",
+													label: "Duplicate",
+													icon: <CopyOutlined />,
+													onClick: () => item && onDuplicate && onDuplicate(item)
+												},
+												{
+													key: "delete",
+													label: "Delete",
+													danger: true,
+													icon: <DeleteOutlined />,
+													onClick: () => item && onDelete && onDelete(item)
+												},
+											],
+										}}
+									>
+										<Button type="text" icon={<EllipsisOutlined />} />
+									</Dropdown>
+								</div>
+								<div style={{ maxHeight: "60vh", overflowY: "auto", padding: "24px" }}>
+									<Paragraph style={{ whiteSpace: "pre-wrap", fontSize: 15, lineHeight: 1.6 }}>
+										{renderContent(item)}
+									</Paragraph>
+								</div>
+							</>
+						)}
+					</Form>
+				</>
 			)}
 		</Modal>
 	);
