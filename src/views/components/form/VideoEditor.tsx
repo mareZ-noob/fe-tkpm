@@ -20,7 +20,38 @@ export default function VideoEditor() {
   const [duration, setDuration] = useState(30);
   const [triggerFetchSummary, setTriggerFetchSummary] = useState(false);
 
-  const handleNextStep = () => {
+  const token = localStorage.getItem("access_token");
+  console.log("Token:", token);
+
+  const saveTextToDB = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/create/text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          content: textContent,
+          duration: duration,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save text");
+      }
+
+      console.log("Text saved successfully!");
+    } catch (error) {
+      console.error("Error saving text:", error);
+    }
+  };
+
+  const handleNextStep = async () => {
+    if (currentStep === 2) {
+      await saveTextToDB();
+    }
+
     if (currentStep < steps.length) {
       setCurrentStep((prev) => prev + 1);
     }
@@ -142,7 +173,9 @@ export default function VideoEditor() {
           </button>
         )}
         {currentStep === steps.length && (
-          <button className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600">Generate Video</button>
+          <button className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+            Generate Video
+          </button>
         )}
       </div>
     </div>
