@@ -83,7 +83,7 @@ const NavigationLayout: React.FC = () => {
 			</div>
 
 			{/* Main content */}
-			<main className="flex-1 overflow-y-auto h-screen pb-16 md:pb-0">
+			<main className="flex-1 overflow-y-auto w-screen h-screen pb-16 md:pb-0">
 				<Outlet />
 			</main>
 		</div>

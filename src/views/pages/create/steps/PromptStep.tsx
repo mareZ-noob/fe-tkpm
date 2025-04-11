@@ -13,6 +13,11 @@ export default function PromptStep({ setTextContent, onNext, triggerFetchSummary
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [style, setStyle] = useState("casual");
+  const [age, setAge] = useState("18-24");
+  const [language, setLanguage] = useState("English");
+  const [tone, setTone] = useState("engaging");
+
   const handleFetchSummary = async () => {
     if (!keyword.trim()) return;
 
@@ -28,8 +33,11 @@ export default function PromptStep({ setTextContent, onNext, triggerFetchSummary
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ keyword }),
+        body: JSON.stringify({ keyword, style, age, language, tone }),
       });
+
+      const payload = { keyword, style, age, language, tone };
+      console.log("Payload being sent to server:", payload);
 
       const data = await response.json();
       if (response.ok) {
@@ -54,12 +62,68 @@ export default function PromptStep({ setTextContent, onNext, triggerFetchSummary
   return (
     <div className="min-h-[300px] relative">
       <textarea
-        className="w-full h-40 p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder-gray-400 text-black"
+        className="w-full h-30 p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder-gray-400 text-black"
         placeholder="Enter your prompt here..."
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
-        disabled={loading} // Ngăn nhập liệu khi loading
+        disabled={loading}
       ></textarea>
+
+      <div className="grid grid-cols-2 gap-4 mt-4">
+        <div>
+          <label className="block mb-1 text-sm font-medium">Style</label>
+          <select value={style} onChange={(e) => setStyle(e.target.value)} className="w-full p-2 border rounded">
+            <option value="casual">Casual</option>
+            <option value="educational">Educational</option>
+            <option value="dramatic">Dramatic</option>
+            <option value="motivational">Motivational</option>
+            <option value="inspirational">Inspirational</option>
+            <option value="humorous">Humorous</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block mb-1 text-sm font-medium">Age Group</label>
+          <select value={age} onChange={(e) => setAge(e.target.value)} className="w-full p-2 border rounded">
+            <option value="under-13">Under 13</option>
+            <option value="13-17">13-17</option>
+            <option value="18-24">18-24</option>
+            <option value="25-34">25-34</option>
+            <option value="35-49">35-49</option>
+            <option value="50-plus">50+</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block mb-1 text-sm font-medium">Language</label>
+          <select value={language} onChange={(e) => setLanguage(e.target.value)} className="w-full p-2 border rounded">
+            <option value="English">English</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Vietnamese">Vietnamese</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Portuguese">Portuguese</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block mb-1 text-sm font-medium">Tone</label>
+          <select value={tone} onChange={(e) => setTone(e.target.value)} className="w-full p-2 border rounded">
+            <option value="engaging">Engaging</option>
+            <option value="friendly">Friendly</option>
+            <option value="chill">Chill</option>
+            <option value="professional">Professional</option>
+            <option value="funny">Funny</option>
+            <option value="sarcastic">Sarcastic</option>
+            <option value="empathetic">Empathetic</option>
+            <option value="motivational">Motivational</option>
+          </select>
+        </div>
+      </div>
 
       {loading && (
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-50">

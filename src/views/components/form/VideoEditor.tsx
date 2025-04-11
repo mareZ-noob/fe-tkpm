@@ -33,7 +33,6 @@ export default function VideoEditor() {
         },
         body: JSON.stringify({
           content: textContent,
-          duration: duration,
         }),
       });
 
@@ -93,25 +92,21 @@ export default function VideoEditor() {
         />
       ),
     },
+    
     {
       id: 3,
-      name: "Styles",
-      component: (props) => <StylesStep {...props} />,
-    },
-    {
-      id: 4,
       name: "Audio",
       component: (props) => <AudioStep {...props} />,
     },
     {
-      id: 5,
+      id: 4,
       name: "Video",
       component: (props) => <VideoStep {...props} />,
     },
   ];
 
   return (
-    <div className="bg-purple-50 p-6 rounded-lg w-full max-w-4xl mx-auto">
+    <div className="bg-purple-50 p-6 rounded-lg h-full min-h-[1050px] w-full mx-auto">
       <div className="flex items-center gap-2 mb-4">
         <VideoIcon className="text-purple-600" size={24} />
         <h2 className="text-xl font-semibold text-purple-600">Video</h2>
