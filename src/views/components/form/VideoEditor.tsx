@@ -96,7 +96,13 @@ export default function VideoEditor() {
 		{
 			id: 3,
 			name: "Audio",
-			component: (props) => <AudioStep {...props} />,
+			component: (props) => (
+				<AudioStep
+					textContent={textContent}
+					setTextContent={setTextContent}
+					{...props}
+				/>
+			),
 		},
 		{
 			id: 4,
@@ -140,7 +146,7 @@ export default function VideoEditor() {
 									className="flex flex-col items-center"
 								>
 									<button
-										onClick={() => setCurrentStep(step.id)}
+										disabled
 										className={`w-10 h-10 rounded-full flex items-center justify-center ${
 											currentStep >= step.id
 												? "bg-purple-400 text-white"
