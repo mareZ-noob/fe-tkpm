@@ -1,6 +1,6 @@
 ﻿import { Film } from "lucide-react"
 
-export default function VideoFeatures() {
+const VideoFeatures = () => {
 	return (
 		<div className="w-full h-full bg-pink-500 text-white p-8 flex flex-col justify-center">
 			<div className="max-w-xs mx-auto">
@@ -16,6 +16,7 @@ export default function VideoFeatures() {
 				</p>
 			</div>
 		</div>
-	)
-}
+	);
+};
 
+export default VideoFeatures;

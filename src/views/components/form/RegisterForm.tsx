@@ -1,11 +1,9 @@
-﻿"use client";
-
-import type React from "react";
+﻿import type React from "react";
 import { useState, useEffect } from "react";
 import { Eye, EyeOff, Check, AlertCircle } from "lucide-react";
 import AuthService from "@/services/auth/AuthService";
 
-export default function RegisterForm() {
+const RegisterForm = () => {
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -280,3 +278,5 @@ export default function RegisterForm() {
 		</div>
 	);
 }
+
+export default RegisterForm;

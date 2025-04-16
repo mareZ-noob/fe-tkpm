@@ -3,7 +3,7 @@ import { Eye, EyeOff, Check, AlertCircle } from "lucide-react";
 import AuthService from "@/services/auth/AuthService";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
-export default function ResetPasswordForm() {
+const ResetPasswordForm = () => {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 	const [token, setToken] = useState<string>("");
@@ -244,4 +244,6 @@ export default function ResetPasswordForm() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default ResetPasswordForm;

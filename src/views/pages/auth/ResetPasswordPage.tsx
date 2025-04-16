@@ -1,7 +1,7 @@
 import VideoFeatures from "@/components/feature/VideoVeature"
 import ResetPasswordForm from "@/components/form/ResetPasswordForm"
 
-export default function ResetPasswordPage() {
+const ResetPasswordPage = () => {
 	return (
 		<main className="min-h-screen flex bg-gray-50">
 			{/* Video features takes 30% of the screen */}
@@ -14,6 +14,7 @@ export default function ResetPasswordPage() {
 				<ResetPasswordForm />
 			</div>
 		</main>
-	)
-}
+	);
+};
 
+export default ResetPasswordPage;

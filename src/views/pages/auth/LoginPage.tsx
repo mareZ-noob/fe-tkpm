@@ -1,7 +1,7 @@
 import LoginForm from "@/components/form/LoginForm"
 import VideoFeatures from "@/components/feature/VideoVeature"
 
-export default function LoginPage() {
+const LoginPage = () => {
 	return (
 		<main className="min-h-screen flex bg-gray-50">
 			{/* Video features takes 30% of the screen */}
@@ -14,6 +14,7 @@ export default function LoginPage() {
 				<LoginForm />
 			</div>
 		</main>
-	)
-}
+	);
+};
 
+export default LoginPage;

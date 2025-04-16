@@ -2,7 +2,7 @@
 import { Eye, EyeOff } from "lucide-react";
 import AuthService from "@/services/auth/AuthService";
 
-export default function LoginForm() {
+const LoginForm = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
@@ -136,4 +136,6 @@ export default function LoginForm() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default LoginForm;
