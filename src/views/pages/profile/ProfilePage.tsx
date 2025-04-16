@@ -8,6 +8,8 @@ import {
 	EyeOutlined,
 	EyeInvisibleOutlined,
 	CameraOutlined,
+	CheckCircleFilled,
+	CloseCircleFilled,
 } from "@ant-design/icons";
 import {
 	Typography,
@@ -23,6 +25,7 @@ import {
 	Alert,
 	Upload,
 	Modal,
+	Progress,
 } from "antd";
 import type { TabsProps } from "antd";
 import dayjs from "dayjs";
@@ -42,6 +45,14 @@ interface PasswordFormValues {
 	confirm_password: string;
 }
 
+interface PasswordStrength {
+	score: number;
+	hasMinLength: boolean;
+	hasNumber: boolean;
+	hasSpecialChar: boolean;
+	hasUppercase: boolean;
+}
+
 const ProfilePage: React.FC = () => {
 	const [user, setUser] = useState<BaseUser | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -52,6 +63,35 @@ const ProfilePage: React.FC = () => {
 	const [avatarModalVisible, setAvatarModalVisible] = useState(false);
 	const [passwordForm] = Form.useForm();
 	const [profileForm] = Form.useForm();
+	const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({
+		score: 0,
+		hasMinLength: false,
+		hasNumber: false,
+		hasSpecialChar: false,
+		hasUppercase: false,
+	});
+	const [newPassword, setNewPassword] = useState("");
+
+	useEffect(() => {
+		const hasMinLength = newPassword.length >= 8;
+		const hasNumber = /\d/.test(newPassword);
+		const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+		const hasUppercase = /[A-Z]/.test(newPassword);
+
+		let score = 0;
+		if (hasMinLength) score++;
+		if (hasNumber) score++;
+		if (hasSpecialChar) score++;
+		if (hasUppercase) score++;
+
+		setPasswordStrength({
+			score,
+			hasMinLength,
+			hasNumber,
+			hasSpecialChar,
+			hasUppercase,
+		});
+	}, [newPassword]);
 
 	useEffect(() => {
 		const fetchUserProfile = async (retryCount = 0) => {
@@ -174,6 +214,13 @@ const ProfilePage: React.FC = () => {
 	};
 
 	const handlePasswordChange = async (values: PasswordFormValues) => {
+		// Validate password strength before submission
+		const minimumRequiredScore = 2; // Require at least a "medium" strength password
+		if (passwordStrength.score < minimumRequiredScore) {
+			setError("Your password is too weak. Please choose a stronger password.");
+			return;
+		}
+
 		setLoading(true);
 		try {
 			console.log("Changing password with values:", values);
@@ -181,12 +228,36 @@ const ProfilePage: React.FC = () => {
 			setSuccess("Password changed successfully");
 			setError(null);
 			passwordForm.resetFields();
+			setNewPassword("");
 		} catch (error) {
 			console.error("Password change failed:", error);
 			setError("Failed to change password. Your current password may be incorrect.");
 			message.error("Failed to change password");
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const getStrengthColor = () => {
+		switch (passwordStrength.score) {
+			case 0: return "#f5222d";
+			case 1: return "#fa8c16";
+			case 2: return "#faad14";
+			case 3: return "#52c41a";
+			case 4: return "#237804";
+			default: return "#f5222d";
+		}
+	};
+
+	const getStrengthText = () => {
+		if (!newPassword) return "";
+		switch (passwordStrength.score) {
+			case 0: return "Very Weak";
+			case 1: return "Weak";
+			case 2: return "Medium";
+			case 3: return "Strong";
+			case 4: return "Very Strong";
+			default: return "Very Weak";
 		}
 	};
 
@@ -284,20 +355,84 @@ const ProfilePage: React.FC = () => {
 						<Form.Item
 							name="new_password"
 							label="New Password"
-						// rules={[
-						//   { required: true, message: "Please enter your new password" },
-						//   { min: 8, message: "Password must be at least 8 characters" },
-						//   {
-						//     pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/,
-						//     message: "Password must contain at least one letter and one number",
-						//   },
-						// ]}
+							rules={[{ required: true, message: "Please enter your new password" }]}
 						>
 							<Password
 								placeholder="Enter your new password"
 								iconRender={(visible) => (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)}
+								onChange={(e) => setNewPassword(e.target.value)}
 							/>
 						</Form.Item>
+
+						{/* Password Strength Indicator */}
+						{newPassword && (
+							<Form.Item label=" " colon={false}>
+								<div>
+									<div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+										<div style={{ flex: 1, marginRight: 8 }}>
+											<Progress
+												percent={Math.min(100, (passwordStrength.score / 4) * 100)}
+												showInfo={false}
+												strokeColor={getStrengthColor()}
+												size="small"
+											/>
+										</div>
+										<Text style={{ width: 90, color: getStrengthColor(), fontWeight: 'bold' }}>
+											{getStrengthText()}
+										</Text>
+									</div>
+									<div style={{ marginTop: 8 }}>
+										<ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+											<li style={{
+												margin: '4px 0',
+												color: passwordStrength.hasMinLength ? '#52c41a' : '#bfbfbf',
+												display: 'flex',
+												alignItems: 'center'
+											}}>
+												{passwordStrength.hasMinLength ?
+													<CheckCircleFilled style={{ marginRight: 8 }} /> :
+													<CloseCircleFilled style={{ marginRight: 8 }} />}
+												At least 8 characters
+											</li>
+											<li style={{
+												margin: '4px 0',
+												color: passwordStrength.hasNumber ? '#52c41a' : '#bfbfbf',
+												display: 'flex',
+												alignItems: 'center'
+											}}>
+												{passwordStrength.hasNumber ?
+													<CheckCircleFilled style={{ marginRight: 8 }} /> :
+													<CloseCircleFilled style={{ marginRight: 8 }} />}
+												At least 1 number
+											</li>
+											<li style={{
+												margin: '4px 0',
+												color: passwordStrength.hasSpecialChar ? '#52c41a' : '#bfbfbf',
+												display: 'flex',
+												alignItems: 'center'
+											}}>
+												{passwordStrength.hasSpecialChar ?
+													<CheckCircleFilled style={{ marginRight: 8 }} /> :
+													<CloseCircleFilled style={{ marginRight: 8 }} />}
+												At least 1 special character (!@#$%^&*(),.?":{ }|&lt;&gt;)
+											</li>
+											<li style={{
+												margin: '4px 0',
+												color: passwordStrength.hasUppercase ? '#52c41a' : '#bfbfbf',
+												display: 'flex',
+												alignItems: 'center'
+											}}>
+												{passwordStrength.hasUppercase ?
+													<CheckCircleFilled style={{ marginRight: 8 }} /> :
+													<CloseCircleFilled style={{ marginRight: 8 }} />}
+												At least 1 uppercase letter
+											</li>
+										</ul>
+									</div>
+								</div>
+							</Form.Item>
+						)}
+
 						<Form.Item
 							name="confirm_password"
 							label="Confirm New Password"

@@ -58,6 +58,30 @@ class AuthService {
 		}
 	};
 
+	forgotPassword = async (email: string): Promise<void> => {
+		try {
+			await api.post("/auth/forgot-password", { email });
+		} catch (error) {
+			console.error("Error during password reset:", error);
+			throw error;
+		}
+	}
+
+	resetPassword = async (
+		token: string,
+		new_password: string
+	): Promise<void> => {
+		try {
+			await api.post("/auth/reset-password", {
+				token,
+				new_password,
+			});
+		} catch (error) {
+			console.error("Error during password reset:", error);
+			throw error;
+		}
+	};
+
 	getCurrentUser = (): boolean => {
 		const token = localStorage.getItem('access_token');
 		return !!token;
