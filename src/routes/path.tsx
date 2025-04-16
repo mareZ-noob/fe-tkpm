@@ -8,6 +8,12 @@ export const Path = {
 	register: {
 		index: "/register",
 	},
+	forgotPassword: {
+		index: "/forgot-password",
+	},
+	resetPassword: {
+		index: "/reset-password",
+	},
 	user: {
 		index: "/",
 		outlets: {

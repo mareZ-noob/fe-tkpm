@@ -12,6 +12,8 @@ import VideosPage from "@/pages/video/VideoPage";
 import FilesPage from "@/pages/documents/DocumentPage";
 import CreatePage from "@/pages/create/CreatePage";
 import AuthService from "@/services/auth/AuthService";
+import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/auth/ResetPasswordPage";
 
 interface PublicRouteProps {
 	children: React.ReactNode;
@@ -64,6 +66,22 @@ const AppRoutes: React.FC = () => {
 					element={
 						<PublicRoute>
 							<RegisterPage />
+						</PublicRoute>
+					}
+				/>
+				<Route
+					path={Path.forgotPassword.index}
+					element={
+						<PublicRoute>
+							<ForgotPasswordPage />
+						</PublicRoute>
+					}
+				/>
+				<Route
+					path={Path.resetPassword.index}
+					element={
+						<PublicRoute>
+							<ResetPasswordPage />
 						</PublicRoute>
 					}
 				/>

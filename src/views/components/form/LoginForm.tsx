@@ -13,9 +13,9 @@ export default function LoginForm() {
 		e.preventDefault();
 		setMessage({ type: "", text: "" });
 		setLoading(true);
-	
+
 		let timeoutId: NodeJS.Timeout | null = null;
-	
+
 		try {
 			timeoutId = setTimeout(() => {
 				setMessage({
@@ -24,11 +24,11 @@ export default function LoginForm() {
 				});
 				setLoading(false);
 			}, 3000);
-	
+
 			const data = await AuthService.login(username, password);
-	
-			if (timeoutId) clearTimeout(timeoutId); 
-	
+
+			if (timeoutId) clearTimeout(timeoutId);
+
 			if (data.access_token) {
 				localStorage.setItem("access_token", data.access_token);
 				setMessage({
@@ -45,21 +45,21 @@ export default function LoginForm() {
 			}
 		} catch (error: any) {
 			if (timeoutId) clearTimeout(timeoutId);
-	
+
 			console.error("An unexpected error happened:", error);
-	
+
 			let errorMessage = "Server error. Please try again later.";
 			if (error?.response?.data?.msg) {
 				errorMessage = error.response.data.msg;
 			} else if (error?.message) {
 				errorMessage = error.message;
 			}
-	
+
 			setMessage({ type: "error", text: errorMessage });
 			setLoading(false);
 		}
 	};
-	
+
 
 	return (
 		<div className="w-full max-w-md bg-pink-50 p-8 rounded-lg shadow-md">
@@ -70,11 +70,10 @@ export default function LoginForm() {
 
 				{message.text && (
 					<div
-						className={`text-sm p-2 rounded-md text-center ${
-							message.type === "success"
-								? "bg-green-200 text-green-700"
-								: "bg-red-200 text-red-700"
-						}`}
+						className={`text-sm p-2 rounded-md text-center ${message.type === "success"
+							? "bg-green-200 text-green-700"
+							: "bg-red-200 text-red-700"
+							}`}
 					>
 						{message.text}
 					</div>
@@ -117,23 +116,23 @@ export default function LoginForm() {
 					<button
 						type="submit"
 						disabled={loading}
-						className={`w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded-md ${
-							loading ? "opacity-50 cursor-not-allowed" : ""
-						}`}
+						className={`w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded-md ${loading ? "opacity-50 cursor-not-allowed" : ""
+							}`}
 					>
 						{loading ? "Logging in..." : "Login"}
 					</button>
 				</form>
-
-				<p className="text-sm text-center text-pink-800 mt-6">
-					Don't have an account?{" "}
-					<a
-						href="/register"
-						className="text-pink-600 hover:underline"
-					>
-						Register now!
-					</a>
-				</p>
+				<div className="text-sm text-center text-pink-800 mt-6 flex flex-col gap-2">
+					<div>
+						<span>New to saikou? </span>
+						<a href="/register" className="text-pink-600 hover:underline">Sign Up</a>
+					</div>
+					<div>
+						<a href="/forgot-password" className="text-pink-600 hover:underline">
+							Forgot your password?
+						</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	);
