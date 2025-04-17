@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { VideoIcon } from "lucide-react";
 import AudioStep from "@/pages/create/steps/AudioStep";
 import VideoStep from "@/pages/create/steps/VideoStep";
@@ -19,6 +19,18 @@ const VideoEditor = () => {
 
 	const token = localStorage.getItem("access_token");
 	console.log("Token:", token);
+
+	useEffect(() => {
+        const handleResetTrigger = () => {
+            setTriggerFetchSummary(false);
+        };
+
+        window.addEventListener('resetTriggerFetchSummary', handleResetTrigger);
+
+        return () => {
+            window.removeEventListener('resetTriggerFetchSummary', handleResetTrigger);
+        };
+    }, []);
 
 	const saveTextToDB = async () => {
 		try {
@@ -56,6 +68,9 @@ const VideoEditor = () => {
 	const handlePreviousStep = () => {
 		if (currentStep > 1) {
 			setCurrentStep((prev) => prev - 1);
+			if (currentStep === 2) {
+                setTriggerFetchSummary(false);
+            }
 		}
 	};
 
@@ -109,7 +124,7 @@ const VideoEditor = () => {
 	];
 
 	return (
-		<div className="bg-purple-50 p-6 rounded-lg h-full min-h-[1050px] w-full mx-auto">
+		<div className="p-6 rounded-lg w-full mx-auto flex flex-col bg-purple-50">
 			<div className="flex items-center gap-2 mb-4">
 				<VideoIcon className="text-purple-600" size={24} />
 				<h2 className="text-xl font-semibold text-purple-600">Video</h2>

@@ -1,6 +1,4 @@
-﻿"use client";
-
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 
 interface PromptStepProps {
 	setTextContent: (text: string) => void;
@@ -50,8 +48,14 @@ const PromptStep = ({ setTextContent, onNext, triggerFetchSummary }: PromptStepP
 			setError("Something went wrong.");
 		} finally {
 			setLoading(false);
+			handleFetchComplete();
 		}
 	};
+
+	const handleFetchComplete = () => {
+        const resetTrigger = new CustomEvent('resetTriggerFetchSummary');
+        window.dispatchEvent(resetTrigger);
+    };
 
 	useEffect(() => {
 		if (triggerFetchSummary) {
