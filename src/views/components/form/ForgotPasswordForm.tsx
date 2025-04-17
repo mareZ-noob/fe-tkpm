@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AuthService from "@/services/auth/AuthService";
 
-export default function ForgotPasswordForm() {
+const ForgotPasswordForm = () => {
 	const [email, setEmail] = useState("");
 	const [message, setMessage] = useState({ type: "", text: "" });
 	const [loading, setLoading] = useState(false);
@@ -48,8 +48,8 @@ export default function ForgotPasswordForm() {
 				{message.text && (
 					<div
 						className={`text-sm p-2 mb-4 rounded-md text-center ${message.type === "success"
-								? "bg-green-200 text-green-700"
-								: "bg-red-200 text-red-700"
+							? "bg-green-200 text-green-700"
+							: "bg-red-200 text-red-700"
 							}`}
 					>
 						{message.text}
@@ -93,4 +93,6 @@ export default function ForgotPasswordForm() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default ForgotPasswordForm;

@@ -1,7 +1,7 @@
 import VideoFeatures from "@/components/feature/VideoVeature"
 import ForgotPasswordForm from "@/components/form/ForgotPasswordForm"
 
-export default function ForgotPasswordPage() {
+const ForgotPasswordPage = () => {
 	return (
 		<main className="min-h-screen flex bg-gray-50">
 			{/* Video features takes 30% of the screen */}
@@ -14,6 +14,7 @@ export default function ForgotPasswordPage() {
 				<ForgotPasswordForm />
 			</div>
 		</main>
-	)
-}
+	);
+};
 
+export default ForgotPasswordPage;

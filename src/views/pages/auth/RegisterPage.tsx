@@ -1,7 +1,7 @@
 import RegisterForm from "@/components/form/RegisterForm"
 import VideoFeatures from "@/components/feature/VideoVeature"
 
-export default function RegisterPage() {
+const RegisterPage = () => {
 	return (
 		<main className="min-h-screen flex bg-gray-50">
 			{/* Video features takes 30% of the screen */}
@@ -14,6 +14,7 @@ export default function RegisterPage() {
 				<RegisterForm />
 			</div>
 		</main>
-	)
-}
+	);
+};
 
+export default RegisterPage;

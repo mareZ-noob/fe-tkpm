@@ -309,7 +309,7 @@ const getMonthName = (date: Date): string => {
 // Generate monthly data for documents and videos
 const generateMonthlyData = () => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  
+
   // Count documents by month
   const documentsByMonth = Array(12).fill(0)
   sampleDocuments.forEach(doc => {
@@ -317,7 +317,7 @@ const generateMonthlyData = () => {
     const month = date.getMonth()
     documentsByMonth[month]++
   })
-  
+
   // Count videos by month
   const videosByMonth = Array(12).fill(0)
   sampleVideos.forEach(video => {
@@ -325,7 +325,7 @@ const generateMonthlyData = () => {
     const month = date.getMonth()
     videosByMonth[month]++
   })
-  
+
   return {
     labels: months,
     documentData: documentsByMonth,
@@ -348,7 +348,7 @@ function App() {
     // Get 3 random videos
     const shuffledVideos = [...sampleVideos].sort(() => 0.5 - Math.random())
     setRandomVideos(shuffledVideos.slice(0, 3))
-    
+
     // Generate monthly data
     setMonthlyData(generateMonthlyData())
   }, [])
@@ -708,4 +708,4 @@ function StatCardWithChart({ title, value, icon, trend, chartData }: StatCardWit
   )
 }
 
-export default App
+export default DashboardPage;

@@ -1,9 +1,6 @@
-﻿"use client";
-
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { VideoIcon } from "lucide-react";
 import AudioStep from "@/pages/create/steps/AudioStep";
-import StylesStep from "@/pages/create/steps/StylesStep";
 import VideoStep from "@/pages/create/steps/VideoStep";
 import TextStep from "@/pages/create/steps/TextStep";
 import PromptStep from "@/pages/create/steps/PromptStep";
@@ -14,7 +11,7 @@ type Step = {
 	component: (props: any) => React.ReactNode;
 };
 
-export default function VideoEditor() {
+const VideoEditor = () => {
 	const [currentStep, setCurrentStep] = useState(1);
 	const [textContent, setTextContent] = useState("");
 	const [duration, setDuration] = useState(30);
@@ -209,4 +206,6 @@ export default function VideoEditor() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default VideoEditor;

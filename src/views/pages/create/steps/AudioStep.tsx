@@ -5,10 +5,10 @@ interface AudioStepProps {
 	setTextContent: (text: string) => void;
 }
 
-export default function AudioStep({
+const AudioStep = ({
 	textContent,
 	setTextContent,
-}: AudioStepProps) {
+}: AudioStepProps) => {
 	const voices = [
 		{ id: 1, name: "Emma (Female)", language: "en-US", gender: "female" },
 		{ id: 2, name: "John (Male)", language: "en-US", gender: "male" },
@@ -161,4 +161,6 @@ export default function AudioStep({
 			</div>
 		</div>
 	);
-}
+};
+
+export default AudioStep;
