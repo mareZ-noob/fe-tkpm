@@ -37,12 +37,13 @@ class TtsService {
 		}
 	}
 
-	async generateTts(engine: string, text: string, voiceId: string): Promise<string> {
+	async generateTts(engine: string, text: string, voiceId: string, speed=1.0): Promise<string> {
 		try {
 			const response = await api.post(`/tts/generate`, {
 				engine,
 				text,
-				voice_id: voiceId
+				voice_id: voiceId,
+				speed: speed
 			}, {
 				responseType: 'blob'
 			});

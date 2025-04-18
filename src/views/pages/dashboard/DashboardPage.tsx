@@ -708,4 +708,4 @@ function StatCardWithChart({ title, value, icon, trend, chartData }: StatCardWit
   )
 }
 
-export default DashboardPage;
+export default App
