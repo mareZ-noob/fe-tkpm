@@ -14,6 +14,12 @@
   /* --font-app: "Work Sans", sans-serif; */
 }
 
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
 .ant-modal-dark-theme .ant-modal-title {
   color: #ffffff;
 }

@@ -20,13 +20,14 @@ const NavigationLayout: React.FC = () => {
 	];
 
 	return (
-		<div className="flex h-screen overflow-hidden bg-white dark:bg-gray-900 dark:text-white">
+		<div className="flex h-screen overflow-hidden bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 			{/* Sidebar for desktop */}
 			<aside
 				className={clsx(
-					"hidden md:flex flex-col border-r border-gray-200 dark:border-gray-800 transition-all duration-300 px-4 py-8",
-					expanded ? 'w-70' : 'w-20'
-				)}
+                    "hidden md:flex flex-col border-r border-gray-200 dark:border-gray-700 transition-all duration-300 px-4 py-8",
+                    "bg-white dark:bg-slate-800",
+                    expanded ? 'w-70' : 'w-20'
+                )}
 			>
 				<div
 					className={clsx("p-2 flex items-center mb-8",
@@ -40,10 +41,10 @@ const NavigationLayout: React.FC = () => {
 					)}
 					<button
 						onClick={toggleSidebar}
-						className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer relative group"
+						className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer relative group transition-colors duration-200"
 					>
 						{expanded ? <PanelLeftClose size={30} /> : <PanelRightClose size={30} />}
-						<span className="absolute z-30 left-1/2 transform -translate-x-1/6 top-full mt-2 w-max px-2 py-1 text-sm bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
+						<span className="absolute z-30 left-full ml-2 top-1/2 transform -translate-y-1/2 w-max px-2 py-1 text-xs bg-gray-700 dark:bg-gray-600 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
 							{expanded ? 'Close Sidebar' : 'Open Sidebar'}
 						</span>
 					</button>
@@ -62,7 +63,7 @@ const NavigationLayout: React.FC = () => {
 				</nav>
 
 				{/* Settings Button and text go here*/}
-				<div className="mt-auto mb-4">
+				<div className="mt-auto mb-4 cursor-pointer">
 					<Settings size={parseInt(navIconSize)} showLabel={expanded} />
 				</div>
 			</aside>
@@ -83,7 +84,7 @@ const NavigationLayout: React.FC = () => {
 			</div>
 
 			{/* Main content */}
-			<main className="flex-1 overflow-y-auto w-screen h-screen pb-16 md:pb-0">
+			<main className="flex-1 overflow-y-auto pb-16 md:pb-0 bg-purple-50 dark:bg-slate-900">
 				<Outlet />
 			</main>
 		</div>

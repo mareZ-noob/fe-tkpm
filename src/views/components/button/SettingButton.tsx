@@ -109,7 +109,7 @@ const Settings: React.FC<SettingsProps> = ({ size, showLabel }) => {
 			{/* Settings Button */}
 			<button
 				onClick={handleOpenSettings}
-				className="flex items-center p-3 w-full rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+				className="flex items-center p-3 w-full rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
 			>
 				<SettingsIcon size={size} className={clsx({ 'mr-4': showLabel, 'mr-0': !showLabel })} />
 				{showLabel && <span>Settings</span>}

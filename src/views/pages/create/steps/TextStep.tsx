@@ -3,15 +3,13 @@
 interface TextStepProps {
 	textContent: string;
 	setTextContent: (text: string) => void;
-	duration: number;
-	setDuration: (duration: number) => void;
+	onNext: () => void;
 }
 
 const TextStep = ({
 	textContent,
 	setTextContent,
-	duration,
-	setDuration,
+	onNext,
 }: TextStepProps) => {
 	const [paragraphs, setParagraphs] = useState<string[]>([]);
 
@@ -26,7 +24,7 @@ const TextStep = ({
 		const updated = [...paragraphs];
 		updated[index] = value;
 		setParagraphs(updated);
-		setTextContent(updated.join("\n\n")); // Ghép lại toàn bộ để set lại text gốc
+		setTextContent(updated.join("\n\n"));
 	};
 
 	return (

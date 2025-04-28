@@ -10,7 +10,7 @@ class TtsService {
 			console.error("Error fetching engines:", error);
 			throw new Error("Could not fetch engines. Please ensure the backend is running.");
 		}
-	}
+	};
 
 	async getLanguages(engine: string): Promise<string[]> {
 		try {
@@ -20,7 +20,7 @@ class TtsService {
 			console.error(`Error fetching languages for engine ${engine}:`, error);
 			throw new Error(`Could not fetch languages for engine ${engine}.`);
 		}
-	}
+	};
 
 	async filterVoices(engine: string, language: string, gender: string = 'all'): Promise<VoiceData[]> {
 		try {
@@ -35,9 +35,9 @@ class TtsService {
 			console.error(`Error filtering voices for ${engine}/${language}:`, error);
 			throw new Error(`Could not filter voices for ${engine}/${language}.`);
 		}
-	}
+	};
 
-	async generateTts(engine: string, text: string, voiceId: string, speed=1.0): Promise<string> {
+	async generateTts(engine: string, text: string, voiceId: string, speed = 1.0): Promise<string> {
 		try {
 			const response = await api.post(`/tts/generate`, {
 				engine,
@@ -93,6 +93,52 @@ class TtsService {
 				}
 			}
 			throw new Error(`TTS Generation Failed: ${error.message || 'Network or server error'}`);
+		}
+	};
+
+	async generateTtsBlob(engine: string, text: string, voiceId: string, speed = 1.0): Promise<Blob> {
+		try {
+			const response = await api.post(`/tts/generate`, {
+				engine,
+				text,
+				voice_id: voiceId,
+				speed: speed
+			}, {
+				responseType: 'blob'
+			});
+
+			if (response.status === 200 && response.data && response.data.type === 'audio/mp3') {
+				// Directly return the blob
+				return new Blob([response.data], { type: 'audio/mp3' });
+			} else {
+				const errorText = await response.data.text();
+				console.error("TTS Blob Generation Failed:", response.status, errorText);
+				try {
+					const parsed = JSON.parse(errorText);
+					throw new Error(`TTS Generation Failed: ${parsed.msg || 'Unknown backend error'}`);
+				} catch {
+					throw new Error(`Received invalid response (status ${response.status}) from TTS generation`);
+				}
+			}
+
+		} catch (error: any) {
+			console.error("Error during TTS Blob generation request:", error);
+			if (error.response && error.response.data) {
+				if (error.response.data instanceof Blob && error.response.data.type === "application/json") {
+					const errorJsonText = await error.response.data.text();
+					try {
+						const parsedError = JSON.parse(errorJsonText);
+						throw new Error(`TTS Generation Failed: ${parsedError.msg || 'Unknown backend error'}`);
+					} catch (parseError) {
+						console.error("Failed to parse backend JSON error:", errorJsonText);
+						console.error("Received unexpected JSON response:", parseError);
+						throw new Error(`TTS Generation Failed: ${error.message || 'Network or server error (failed to parse error details)'}`);
+					}
+				} else if (typeof error.response.data === 'object') {
+					throw new Error(`TTS Generation Failed: ${error.response.data.msg || JSON.stringify(error.response.data)}`);
+				}
+			}
+			throw new Error(`TTS Blob Generation Failed: ${error.message || 'Network or server error'}`);
 		}
 	}
 }

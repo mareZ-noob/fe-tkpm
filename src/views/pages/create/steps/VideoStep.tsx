@@ -1,4 +1,10 @@
-﻿const VideoStep = () => {
+﻿interface VideotStepProps {
+	textContent: string;
+	setTextContent: (text: string) => void;
+	onNext: () => void;
+}
+
+const VideoStep = ({ textContent, setTextContent, onNext }: VideotStepProps) => {
 	return (
 		<div className="min-h-[300px] flex flex-col items-center justify-center">
 			<div className="w-full max-w-md bg-gray-100 rounded-md p-8 text-center">
