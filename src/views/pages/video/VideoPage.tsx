@@ -247,7 +247,7 @@ const VideoPage = () => {
 			filterComponent={filterComponent}
 			sortComponent={sortComponent}
 			totalItems={filteredAndSortedVideos().length}
-			headerActions={pageHeaderActions}
+			// headerActions={pageHeaderActions}
 		>
 			<ItemGrid
 				items={filteredAndSortedVideos()}

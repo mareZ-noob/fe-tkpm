@@ -8,6 +8,8 @@ import PageLayout from "@/layouts/PageLayout";
 import ItemGrid from "@/components/grid/ItemGrid";
 import ItemModal from "@/components/modal/ItemModal";
 import TextFileIcon from "@/components/icon/TextFileIcon";
+import { useNavigate } from "react-router-dom";
+import { Path } from "@/routes/path";
 
 const DocumentPage = () => {
 	const [files, setFiles] = useState<BaseDocument[]>([]);
@@ -18,6 +20,7 @@ const DocumentPage = () => {
 	const [sortOption, setSortOption] = useState<string>("date-new");
 	const [filterOption, setFilterOption] = useState<string>("all");
 	const [form] = Form.useForm();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchDocuments = async () => {
@@ -190,6 +193,20 @@ const DocumentPage = () => {
 		}
 	};
 
+	const handleContinueToEditor = () => {
+        if (!selectedFile) {
+            message.error("No file selected.");
+            return;
+        }
+        console.log("Navigating to create page with content:", selectedFile.content);
+        navigate(Path.user.outlets.create, {
+            state: {
+                initialContent: selectedFile.content || "",
+                initialStep: 2,
+            },
+        });
+        closeFile();
+    };
 
 	return (
 		<PageLayout
@@ -279,6 +296,7 @@ const DocumentPage = () => {
 					</div>
 				)}
 				renderContent={(file) => file.content || "No content"}
+				onActionClick={handleContinueToEditor}
 			/>
 		</PageLayout>
 	);

@@ -33,6 +33,7 @@
       "@/layouts/*": ["./src/views/layouts/*"],
       "@/pages/*": ["./src/views/pages/*"],
       "@/utils/*": ["./src/utils/*"],
+      "@/routes/*": ["./src/routes/*"],
     }
   },
   "include": ["src"]

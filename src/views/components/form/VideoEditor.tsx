@@ -14,15 +14,28 @@ type Step = {
 	component: (props: any) => React.ReactNode;
 };
 
-const VideoEditor = () => {
-	const [currentStep, setCurrentStep] = useState(1);
-	const [textContent, setTextContent] = useState("");
+interface VideoEditorProps {
+    initialContent?: string;
+    initialStep?: number;
+}
+
+const VideoEditor: React.FC<VideoEditorProps> = ({ initialContent = "", initialStep = 1 }) => {
+	const [currentStep, setCurrentStep] = useState(initialStep);
+    const [textContent, setTextContent] = useState(initialContent);
 	const [triggerFetchSummary, setTriggerFetchSummary] = useState(false);
 	const [finalAudioUrl, setFinalAudioUrl] = useState<string | null>(null);
 	const [isProcessingAudio, setIsProcessingAudio] = useState(false);
 	const [audioProcessingError, setAudioProcessingError] = useState<string | null>(null);
 	const [isGeneratingScript, setIsGeneratingScript] = useState(false);
 	const audioStepRef = useRef<AudioStepHandle>(null);
+
+	useEffect(() => {
+        setTextContent(initialContent);
+    }, [initialContent]);
+
+     useEffect(() => {
+        setCurrentStep(initialStep);
+    }, [initialStep]);
 
 	useEffect(() => {
 		const handleResetTrigger = () => {
