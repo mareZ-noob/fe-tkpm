@@ -19,6 +19,7 @@ interface ItemModalProps<T extends { updated_at: string }> {
 	hideEditButton?: boolean;
 	actionName?: string;
 	hideContentField?: boolean;
+	onActionClick?: () => void;
 }
 
 const ItemModal = <T extends { updated_at: string },>({
@@ -35,6 +36,7 @@ const ItemModal = <T extends { updated_at: string },>({
 	hideEditButton = false,
 	actionName = "Continue",
 	hideContentField = false,
+	onActionClick,
 }: ItemModalProps<T>) => {
 	const footer = [
 		!hideEditButton && (
@@ -50,9 +52,7 @@ const ItemModal = <T extends { updated_at: string },>({
 		<Button
 			key="continue"
 			type="primary"
-			onClick={() => {
-				console.log("Continue clicked")
-			}}
+			onClick={onActionClick ? onActionClick : () => console.log("Action clicked - no handler provided")}
 			style={{ display: isEditing ? "none" : "inline-flex" }}
 		>
 			{actionName}
@@ -89,6 +89,7 @@ const ItemModal = <T extends { updated_at: string },>({
 			footer={footer}
 			width={700}
 			styles={{ body: { padding: isEditing ? "16px 24px" : 0 } }}
+			destroyOnClose
 		>
 			{item && (
 				<>
