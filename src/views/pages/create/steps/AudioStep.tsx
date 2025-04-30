@@ -583,7 +583,7 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 	const disabledSelectClasses = "disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed";
 
 	return (
-		<div className="space-y-6 bg-gray-50 dark:bg-gray-800 p-4 sm:p-6 rounded-lg">
+		<div className="space-y-6  p-4 sm:p-6 rounded-lg">
 			{/* TTS Options */}
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-700/30">
 				{/* Engine, Language, Gender Selects (unchanged) */}
