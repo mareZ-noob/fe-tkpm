@@ -134,9 +134,15 @@ const DocumentPage = () => {
 					{ key: "starred", label: "Starred" },
 				],
 				onClick: ({ key }) => setFilterOption(key),
+				className: "bg-white dark:bg-gray-800 dark:border-gray-600",
+				selectable: true,
+				selectedKeys: [filterOption],
 			}}
+			overlayClassName="rounded-md shadow-lg [&_.ant-dropdown-menu-item]:text-gray-900 [&_.ant-dropdown-menu-item]:dark:text-gray-100 [&_.ant-dropdown-menu-item:hover]:bg-gray-100 [&_.ant-dropdown-menu-item:hover]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:bg-gray-100 [&_.ant-dropdown-menu-item:focus]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:ring-2 [&_.ant-dropdown-menu-item:focus]:ring-blue-500 [&_.ant-dropdown-menu-item:focus]:dark:ring-blue-400 [&_.ant-dropdown-menu-item-selected]:bg-blue-50 [&_.ant-dropdown-menu-item-selected]:dark:bg-blue-900/50 [&_.ant-dropdown-menu-item-selected]:text-blue-600 [&_.ant-dropdown-menu-item-selected]:dark:text-blue-300"
 		>
-			<Button style={{ borderRadius: 6 }}>
+			<Button
+				className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+			>
 				Filter: {filterOption === "all" ? "All" : "Starred"}
 			</Button>
 		</Dropdown>
@@ -152,9 +158,15 @@ const DocumentPage = () => {
 					{ key: "date-old", label: "Date (Oldest)" },
 				],
 				onClick: ({ key }) => setSortOption(key),
+				className: "bg-white dark:bg-gray-800 dark:border-gray-600",
+				selectable: true,
+				selectedKeys: [sortOption],
 			}}
+			overlayClassName="rounded-md shadow-lg [&_.ant-dropdown-menu-item]:text-gray-900 [&_.ant-dropdown-menu-item]:dark:text-gray-100 [&_.ant-dropdown-menu-item:hover]:bg-gray-100 [&_.ant-dropdown-menu-item:hover]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:bg-gray-100 [&_.ant-dropdown-menu-item:focus]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:ring-2 [&_.ant-dropdown-menu-item:focus]:ring-blue-500 [&_.ant-dropdown-menu-item:focus]:dark:ring-blue-400 [&_.ant-dropdown-menu-item-selected]:bg-blue-50 [&_.ant-dropdown-menu-item-selected]:dark:bg-blue-900/50 [&_.ant-dropdown-menu-item-selected]:text-blue-600 [&_.ant-dropdown-menu-item-selected]:dark:text-blue-300"
 		>
-			<Button style={{ borderRadius: 6 }}>
+			<Button
+				className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+			>
 				Sort:{" "}
 				{sortOption === "name-asc"
 					? "Name (A-Z)"
@@ -194,19 +206,19 @@ const DocumentPage = () => {
 	};
 
 	const handleContinueToEditor = () => {
-        if (!selectedFile) {
-            message.error("No file selected.");
-            return;
-        }
-        console.log("Navigating to create page with content:", selectedFile.content);
-        navigate(Path.user.outlets.create, {
-            state: {
-                initialContent: selectedFile.content || "",
-                initialStep: 2,
-            },
-        });
-        closeFile();
-    };
+		if (!selectedFile) {
+			message.error("No file selected.");
+			return;
+		}
+		console.log("Navigating to create page with content:", selectedFile.content);
+		navigate(Path.user.outlets.create, {
+			state: {
+				initialContent: selectedFile.content || "",
+				initialStep: 2,
+			},
+		});
+		closeFile();
+	};
 
 	return (
 		<PageLayout
@@ -225,15 +237,17 @@ const DocumentPage = () => {
 				renderItem={(file) => (
 					<Card
 						hoverable
+						className="bg-white dark:bg-gray-800 dark:border-gray-600 shadow-lg"
 						style={{ borderRadius: 8, overflow: "hidden", height: "100%" }}
 						styles={{ body: { padding: 0, height: "100%", display: "flex", flexDirection: "column" } }}
 						onClick={() => openFile(file)}
 					>
 						<TextFileIcon content={file.content} />
-						<div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8, flexGrow: 1 }}>
+						<div className="p-3 flex flex-col gap-2 flex-grow" style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8, flexGrow: 1 }}>
 							<div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
 								<Typography.Text
 									strong
+									className="text-gray-900 dark:text-gray-100"
 									style={{
 										fontSize: 15,
 										lineHeight: 1.4,
@@ -248,13 +262,19 @@ const DocumentPage = () => {
 								<Button
 									type="text"
 									size="small"
-									icon={file.starred ? <StarFilled style={{ color: "#fadb14" }} /> : <StarOutlined />}
+									icon={
+										file.starred ? (
+											<StarFilled className="text-yellow-500 dark:text-yellow-400" />
+										) : (
+											<StarOutlined className="text-gray-600 dark:text-gray-300" />
+										)
+									}
 									onClick={(e) => toggleStar(file.id, e)}
 								/>
 							</div>
-							<div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: "auto" }}>
-								<ClockCircleOutlined style={{ fontSize: 12, color: "#8c8c8c" }} />
-								<Typography.Text type="secondary" style={{ fontSize: 12 }}>
+							<div className="flex items-center gap-2 mt-auto" style={{ display: "flex", alignItems: "center", gap: 8, marginTop: "auto" }}>
+								<ClockCircleOutlined className="text-gray-500 dark:text-gray-400" style={{ fontSize: 12, color: "#8c8c8c" }} />
+								<Typography.Text className="text-gray-500 dark:text-gray-400" type="secondary" style={{ fontSize: 12 }}>
 									{FormatRelativeTime(file.updated_at)}
 								</Typography.Text>
 							</div>
@@ -272,8 +292,9 @@ const DocumentPage = () => {
 				onDuplicate={(file) => handleDuplicateDocument(file)}
 				form={form}
 				renderTitle={(file) => (
-					<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+					<div className="flex items-center gap-2" style={{ display: "flex", alignItems: "center", gap: 8 }}>
 						<div
+							className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center"
 							style={{
 								width: 24,
 								height: 24,
@@ -284,18 +305,26 @@ const DocumentPage = () => {
 								justifyContent: "center",
 							}}
 						>
-							<FileTextOutlined style={{ fontSize: 14, color: "#722ed1" }} />
+							<FileTextOutlined className="text-purple-600 dark:text-purple-400" style={{ fontSize: 14, color: "#722ed1" }} />
 						</div>
-						{file.title || "Untitled"}
+						<span className="text-gray-900 dark:text-gray-100">{file.title || "Untitled"}</span>
 						<Button
 							type="text"
 							size="small"
-							icon={file.starred ? <StarFilled style={{ color: "#fadb14" }} /> : <StarOutlined />}
+							icon={
+								file.starred ? (
+									<StarFilled className="text-yellow-500 dark:text-yellow-400" />
+								) : (
+									<StarOutlined className="text-gray-600 dark:text-gray-300" />
+								)
+							}
 							onClick={(e) => toggleStar(file.id, e)}
 						/>
 					</div>
 				)}
-				renderContent={(file) => file.content || "No content"}
+				renderContent={(file) => (
+					<span className="text-gray-900 dark:text-gray-100">{file.content || "No content"}</span>
+				)}
 				onActionClick={handleContinueToEditor}
 			/>
 		</PageLayout>

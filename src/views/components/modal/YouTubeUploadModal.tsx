@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Modal, Form, Input, Select, Upload, Button, Progress, message, Alert, Space, Typography } from 'antd';
 import { UploadOutlined, YoutubeOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
-import YoutubeService from '@/services/youtube/YoutubeService';
+import YoutubeService from '@/services/youtube/YouTubeService';
 
 const { Option } = Select;
 const { TextArea } = Input;

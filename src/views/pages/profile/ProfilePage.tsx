@@ -265,13 +265,13 @@ const ProfilePage: React.FC = () => {
 		{
 			key: "1",
 			label: (
-				<span>
+				<span className="text-gray-900 dark:text-gray-100">
 					<UserOutlined style={{ marginRight: 8 }} />
 					Personal Information
 				</span>
 			),
 			children: (
-				<div style={{ padding: "16px 0" }}>
+				<div className="p-4" style={{ padding: "16px 0" }}>
 					<Form
 						form={profileForm}
 						layout="vertical"
@@ -283,46 +283,88 @@ const ProfilePage: React.FC = () => {
 							description: user?.description || "",
 						}}
 					>
-						<div style={{ display: "flex", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
+						<div className="flex gap-4 mb-6 flex-wrap" style={{ display: "flex", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
 							<Form.Item
 								name="first_name"
-								label="First Name"
+								label={<span className="text-gray-700 dark:text-gray-300">First Name</span>}
+								className="flex-1 min-w-[200px]"
 								style={{ flex: 1, minWidth: 200 }}
 								rules={[{ required: true, message: "Please enter your first name" }]}
 							>
-								<Input placeholder="Enter your first name" />
+								<Input
+									className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+									placeholder="Enter your first name"
+								/>
 							</Form.Item>
 							<Form.Item
 								name="last_name"
-								label="Last Name"
+								label={<span className="text-gray-700 dark:text-gray-300">Last Name</span>}
+								className="flex-1 min-w-[200px]"
 								style={{ flex: 1, minWidth: 200 }}
 								rules={[{ required: true, message: "Please enter your last name" }]}
 							>
-								<Input placeholder="Enter your last name" />
+								<Input
+									className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+									placeholder="Enter your last name"
+								/>
 							</Form.Item>
 						</div>
 						<Form.Item
 							name="date_of_birth"
-							label="Date of Birth"
+							label={<span className="text-gray-700 dark:text-gray-300">Date of Birth</span>}
 							rules={[{ required: true, message: "Please select your date of birth" }]}
 						>
-							<DatePicker style={{ width: "100%" }} placeholder="Select date of birth" />
+							<DatePicker
+								className="w-full bg-white dark:bg-gray-700 dark:text-gray-100" style={{ width: "100%" }}
+								placeholder="Select date of birth"
+							/>
 						</Form.Item>
-						<Form.Item name="description" label="About Me" rules={[{ required: false }]}>
-							<TextArea placeholder="Tell us about yourself..." rows={4} style={{ resize: "none" }} />
+						<Form.Item
+							name="description"
+							label={<span className="text-gray-700 dark:text-gray-300">About Me</span>}
+							rules={[{ required: false }]}
+						>
+							<TextArea
+								className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+								placeholder="Tell us about yourself..."
+								rows={4}
+								style={{ resize: "none" }}
+							/>
 						</Form.Item>
-						<Form.Item label="Email Address">
-							<Input value={user?.email || ""} disabled placeholder="Email address" />
-							<div style={{ marginTop: 4 }}>
-								<Text type="secondary" style={{ fontSize: 12 }}>
+						<Form.Item
+							label={<span className="text-gray-700 dark:text-gray-300">Email Address</span>}
+						>
+							<Input
+								className="bg-gray-100 dark:bg-gray-800 dark:text-gray-300"
+								value={user?.email || ""}
+								disabled
+								placeholder="Email address"
+							/>
+							<div style={{ marginTop: 4 }} className="mt-1">
+								<Text
+									className="text-gray-500 dark:text-gray-400"
+									type="secondary"
+									style={{ fontSize: 12 }}
+								>
 									Email address cannot be changed
 								</Text>
 							</div>
 						</Form.Item>
-						<Form.Item label="Username">
-							<Input value={user?.username || ""} disabled placeholder="Username" />
-							<div style={{ marginTop: 4 }}>
-								<Text type="secondary" style={{ fontSize: 12 }}>
+						<Form.Item
+							label={<span className="text-gray-700 dark:text-gray-300">Username</span>}
+						>
+							<Input
+								className="bg-gray-100 dark:bg-gray-800 dark:text-gray-300"
+								value={user?.username || ""}
+								disabled
+								placeholder="Username"
+							/>
+							<div className="mt-1" style={{ marginTop: 4 }}>
+								<Text
+									className="text-gray-500 dark:text-gray-400"
+									type="secondary"
+									style={{ fontSize: 12 }}
+								>
 									Username cannot be changed
 								</Text>
 							</div>
@@ -334,32 +376,46 @@ const ProfilePage: React.FC = () => {
 		{
 			key: "2",
 			label: (
-				<span>
+				<span className="text-gray-900 dark:text-gray-100">
 					<KeyOutlined style={{ marginRight: 8 }} />
 					Password
 				</span>
 			),
 			children: (
-				<div style={{ padding: "16px 0" }}>
+				<div className="p-4" style={{ padding: "16px 0" }}>
 					<Form form={passwordForm} layout="vertical" onFinish={handlePasswordChange}>
 						<Form.Item
 							name="current_password"
-							label="Current Password"
+							label={<span className="text-gray-700 dark:text-gray-300">Current Password</span>}
 							rules={[{ required: true, message: "Please enter your current password" }]}
 						>
 							<Password
 								placeholder="Enter your current password"
-								iconRender={(visible) => (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)}
+								className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+								iconRender={(visible) =>
+									visible ? (
+										<EyeOutlined className="text-gray-600 dark:text-gray-300" />
+									) : (
+										<EyeInvisibleOutlined className="text-gray-600 dark:text-gray-300" />
+									)
+								}
 							/>
 						</Form.Item>
 						<Form.Item
 							name="new_password"
-							label="New Password"
+							label={<span className="text-gray-700 dark:text-gray-300">New Password</span>}
 							rules={[{ required: true, message: "Please enter your new password" }]}
 						>
 							<Password
 								placeholder="Enter your new password"
-								iconRender={(visible) => (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)}
+								className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+								iconRender={(visible) =>
+									visible ? (
+										<EyeOutlined className="text-gray-600 dark:text-gray-300" />
+									) : (
+										<EyeInvisibleOutlined className="text-gray-600 dark:text-gray-300" />
+									)
+								}
 								onChange={(e) => setNewPassword(e.target.value)}
 							/>
 						</Form.Item>
@@ -368,8 +424,8 @@ const ProfilePage: React.FC = () => {
 						{newPassword && (
 							<Form.Item label=" " colon={false}>
 								<div>
-									<div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
-										<div style={{ flex: 1, marginRight: 8 }}>
+									<div className="flex items-center mb-2" style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+										<div className="flex-1 mr-2" style={{ flex: 1, marginRight: 8 }}>
 											<Progress
 												percent={Math.min(100, (passwordStrength.score / 4) * 100)}
 												showInfo={false}
@@ -377,51 +433,59 @@ const ProfilePage: React.FC = () => {
 												size="small"
 											/>
 										</div>
-										<Text style={{ width: 90, color: getStrengthColor(), fontWeight: 'bold' }}>
+										<Text className="w-[90px]" style={{ width: 90, color: getStrengthColor(), fontWeight: 'bold' }}>
 											{getStrengthText()}
 										</Text>
 									</div>
-									<div style={{ marginTop: 8 }}>
-										<ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
-											<li style={{
-												margin: '4px 0',
-												color: passwordStrength.hasMinLength ? '#52c41a' : '#bfbfbf',
-												display: 'flex',
-												alignItems: 'center'
-											}}>
+									<div className="mt-2" style={{ marginTop: 8 }}>
+										<ul className="list-none p-0 m-0" style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+											<li
+												className="my-1 flex items-center"
+												style={{
+													margin: '4px 0',
+													color: passwordStrength.hasMinLength ? '#52c41a' : '#bfbfbf',
+													display: 'flex',
+													alignItems: 'center'
+												}}>
 												{passwordStrength.hasMinLength ?
-													<CheckCircleFilled style={{ marginRight: 8 }} /> :
-													<CloseCircleFilled style={{ marginRight: 8 }} />}
+													<CheckCircleFilled className="mr-2" style={{ marginRight: 8 }} /> :
+													<CloseCircleFilled className="mr-2" style={{ marginRight: 8 }} />}
 												At least 8 characters
 											</li>
-											<li style={{
-												margin: '4px 0',
-												color: passwordStrength.hasNumber ? '#52c41a' : '#bfbfbf',
-												display: 'flex',
-												alignItems: 'center'
-											}}>
+											<li
+												className="my-1 flex items-center"
+												style={{
+													margin: '4px 0',
+													color: passwordStrength.hasNumber ? '#52c41a' : '#bfbfbf',
+													display: 'flex',
+													alignItems: 'center'
+												}}>
 												{passwordStrength.hasNumber ?
-													<CheckCircleFilled style={{ marginRight: 8 }} /> :
-													<CloseCircleFilled style={{ marginRight: 8 }} />}
+													<CheckCircleFilled className="mr-2" style={{ marginRight: 8 }} /> :
+													<CloseCircleFilled className="mr-2" style={{ marginRight: 8 }} />}
 												At least 1 number
 											</li>
-											<li style={{
-												margin: '4px 0',
-												color: passwordStrength.hasSpecialChar ? '#52c41a' : '#bfbfbf',
-												display: 'flex',
-												alignItems: 'center'
-											}}>
+											<li
+												className="my-1 flex items-center"
+												style={{
+													margin: '4px 0',
+													color: passwordStrength.hasSpecialChar ? '#52c41a' : '#bfbfbf',
+													display: 'flex',
+													alignItems: 'center'
+												}}>
 												{passwordStrength.hasSpecialChar ?
-													<CheckCircleFilled style={{ marginRight: 8 }} /> :
-													<CloseCircleFilled style={{ marginRight: 8 }} />}
+													<CheckCircleFilled className="mr-2" style={{ marginRight: 8 }} /> :
+													<CloseCircleFilled className="mr-2" style={{ marginRight: 8 }} />}
 												At least 1 special character (!@#$%^&*(),.?":{ }|&lt;&gt;)
 											</li>
-											<li style={{
-												margin: '4px 0',
-												color: passwordStrength.hasUppercase ? '#52c41a' : '#bfbfbf',
-												display: 'flex',
-												alignItems: 'center'
-											}}>
+											<li
+												className="my-1 flex items-center"
+												style={{
+													margin: '4px 0',
+													color: passwordStrength.hasUppercase ? '#52c41a' : '#bfbfbf',
+													display: 'flex',
+													alignItems: 'center'
+												}}>
 												{passwordStrength.hasUppercase ?
 													<CheckCircleFilled style={{ marginRight: 8 }} /> :
 													<CloseCircleFilled style={{ marginRight: 8 }} />}
@@ -435,7 +499,7 @@ const ProfilePage: React.FC = () => {
 
 						<Form.Item
 							name="confirm_password"
-							label="Confirm New Password"
+							label={<span className="text-gray-700 dark:text-gray-300">Confirm New Password</span>}
 							dependencies={["new_password"]}
 							rules={[
 								{ required: true, message: "Please confirm your new password" },
@@ -450,8 +514,15 @@ const ProfilePage: React.FC = () => {
 							]}
 						>
 							<Password
+								className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
 								placeholder="Confirm your new password"
-								iconRender={(visible) => (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)}
+								iconRender={(visible) =>
+									visible ? (
+										<EyeOutlined className="text-gray-600 dark:text-gray-300" />
+									) : (
+										<EyeInvisibleOutlined className="text-gray-600 dark:text-gray-300" />
+									)
+								}
 							/>
 						</Form.Item>
 						<Form.Item>
@@ -467,7 +538,10 @@ const ProfilePage: React.FC = () => {
 
 	if (loading && !user) {
 		return (
-			<div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+			<div
+				className="h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900"
+				style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}
+			>
 				<Spin size="large" />
 			</div>
 		);
@@ -505,6 +579,7 @@ const ProfilePage: React.FC = () => {
 					closable
 					onClose={() => setError(null)}
 					style={{ marginBottom: 24 }}
+					className="mb-6 bg-red-50 dark:bg-red-900/50 dark:text-red-200"
 				/>
 			)}
 			{success && (
@@ -516,19 +591,26 @@ const ProfilePage: React.FC = () => {
 					closable
 					onClose={() => setSuccess(null)}
 					style={{ marginBottom: 24 }}
+					className="mb-6 bg-green-50 dark:bg-green-900/50 dark:text-green-200"
 				/>
 			)}
-			<div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-				<div style={{ minWidth: 250, maxWidth: 300 }}>
+			<div className="flex flex-col md:items-center items-center lg:flex-row lg:items-start gap-6" style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+				<div className="w-full lg:w-auto lg:min-w-[250px] lg:max-w-[300px] lg:flex-shrink-0" style={{ minWidth: 250, maxWidth: 300 }}>
 					<ProfileSidebar
 						user={user}
 						isEditing={isEditing}
 						onAvatarChangeClick={() => setAvatarModalVisible(true)}
 					/>
 				</div>
-				<div style={{ flex: 1, minWidth: 0 }}>
-					<Card>
-						<Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems} style={{ minHeight: 400 }} />
+				<div className="w-full md:flex-1 md:min-w-0" style={{ flex: 1, minWidth: 0 }}>
+					<Card className="bg-white dark:bg-gray-800 dark:border-gray-600 shadow-lg">
+						<Tabs
+							className="text-gray-900 dark:text-gray-100"
+							activeKey={activeTab}
+							onChange={setActiveTab}
+							items={tabItems}
+							style={{ minHeight: 400 }}
+						/>
 					</Card>
 				</div>
 			</div>
@@ -537,6 +619,8 @@ const ProfilePage: React.FC = () => {
 				open={avatarModalVisible}
 				onCancel={() => setAvatarModalVisible(false)}
 				footer={null}
+				destroyOnClose
+				className="bg-white dark:bg-gray-800"
 			>
 				<Upload.Dragger
 					name="avatar"
@@ -544,13 +628,15 @@ const ProfilePage: React.FC = () => {
 					showUploadList={false}
 					beforeUpload={(file) => handleFileChange(file)}
 					style={{ padding: 20 }}
+					className="p-5 bg-gray-50 dark:bg-gray-700"
 				>
 					<p className="ant-upload-drag-icon">
 						<CameraOutlined style={{ fontSize: 48, color: "#1677ff" }} />
 					</p>
-					<p className="ant-upload-text">Click or drag an image to this area to upload</p>
-					<p className="ant-upload-hint">
-						Support for a single image upload. Please use an image that is at least 300x300 pixels.
+					<p className="ant-upload-text text-gray-900 dark:text-gray-100">Click or drag an image to this area to upload</p>
+					<p className="ant-upload-hint text-gray-600 dark:text-gray-400">
+						{/* Support for a single image upload. Please use an image that is at least 300x300 pixels. */}
+						Supports JPG, JPEG, PNG. Max file size 2MB recommended.
 					</p>
 				</Upload.Dragger>
 			</Modal>

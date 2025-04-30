@@ -5,12 +5,12 @@ import React, { useState, useEffect, useCallback } from "react";
 interface PromptStepProps {
 	textContent: string;
 	setTextContent: (text: string) => void;
-	onNext: () => void;
 	triggerFetchSummary: boolean;
 	setIsGeneratingScript: (isLoading: boolean) => void;
+	onGenerationComplete: (success: boolean, script: string | null, errorMsg?: string | null) => void;
 }
 
-const PromptStep = ({ setTextContent, onNext, triggerFetchSummary, setIsGeneratingScript }: PromptStepProps) => {
+const PromptStep = ({ setTextContent, triggerFetchSummary, setIsGeneratingScript, onGenerationComplete }: PromptStepProps) => {
 	const [keyword, setKeyword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -80,16 +80,19 @@ const PromptStep = ({ setTextContent, onNext, triggerFetchSummary, setIsGenerati
 	const handleFetchSummary = useCallback(async () => {
 		if (!keyword.trim()) {
 			setError("Please enter a prompt keyword.");
+			onGenerationComplete(false, null, "Please enter a prompt keyword.");
 			handleFetchComplete();
 			return;
 		}
 		if (!selectedProvider) {
 			setError("Please select a provider.");
+			onGenerationComplete(false, null, "Please select a provider.");
 			handleFetchComplete();
 			return;
 		}
 		if (!selectedModel) {
 			setError("Please select a model.");
+			onGenerationComplete(false, null, "Please select a model.");
 			handleFetchComplete();
 			return;
 		}
@@ -111,7 +114,7 @@ const PromptStep = ({ setTextContent, onNext, triggerFetchSummary, setIsGenerati
 		try {
 			const summaryResult = await PromptService.getScript(payload);
 			setTextContent(summaryResult);
-			onNext();
+			onGenerationComplete(true, summaryResult);
 		} catch (err: any) {
 			console.error("Error generating script:", err);
 			const message = err.response?.data?.message
@@ -119,11 +122,12 @@ const PromptStep = ({ setTextContent, onNext, triggerFetchSummary, setIsGenerati
 				|| err.message
 				|| "Something went wrong while generating the script.";
 			setError(message);
+			onGenerationComplete(false, null, message);
 		} finally {
 			setLoading(false);
 			handleFetchComplete();
 		}
-	}, [keyword, style, age, language, tone, selectedProvider, selectedModel, setTextContent, onNext]);
+	}, [keyword, style, age, language, tone, selectedProvider, selectedModel, setTextContent, setIsGeneratingScript, onGenerationComplete]);
 
 	const handleFetchComplete = () => {
 		const resetTrigger = new CustomEvent('resetTriggerFetchSummary');
@@ -184,7 +188,7 @@ const PromptStep = ({ setTextContent, onNext, triggerFetchSummary, setIsGenerati
 			{/* Prompt Textarea */}
 			<textarea
 				className={`${textareaClasses} h-30`}
-				placeholder="Enter your prompt here (e.g., 'Explain black holes to a 5-year-old')..."
+				placeholder="Enter Wikipedia article title or your prompt here (e.g., 'Explain black holes to a 5-year-old')..."
 				value={keyword}
 				onChange={(e) => setKeyword(e.target.value)}
 				disabled={isFormDisabled}

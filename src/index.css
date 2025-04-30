@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans&display=swap");
-@import "tailwindcss";
+@import "tailwindcss" important;
 @import "tw-animate-css";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -29,12 +29,53 @@ body {
   border: 1px solid gray !important;
 }
 
+.dark .ant-modal .ant-modal-content {
+  background-color: #101828 !important;
+  border: 1px solid #101828 !important;
+}
+
+.dark .ant-modal .ant-modal-header {
+  background-color: #101828 !important;
+}
+
+.dark .ant-modal .ant-modal-header .ant-modal-title {
+  color: #ffffff !important;
+}
+
+.dark .ant-modal .ant-modal-close-x {
+  color: #ffffff !important;
+}
+
 .ant-modal-dark-theme .ant-modal-close-x {
   color: rgba(255, 255, 255, 0.45);
 }
 
 .ant-menu-dark {
   background-color: #101828;
+}
+
+.dark .ant-input::placeholder {
+  @apply text-gray-400;
+  opacity: 1;
+}
+
+.dark .ant-input-password input::placeholder {
+  /* Password input might be nested */
+  @apply text-gray-400;
+  opacity: 1;
+}
+
+.dark .ant-picker-suffix {
+  @apply text-gray-400;
+}
+
+.dark .ant-picker-input > input::placeholder {
+  @apply text-gray-400;
+  opacity: 1;
+}
+
+.dark .ant-input-password-icon {
+  @apply text-gray-400;
 }
 
 :root {

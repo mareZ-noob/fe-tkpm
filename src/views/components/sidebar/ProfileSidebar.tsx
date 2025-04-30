@@ -14,6 +14,7 @@ interface ProfileSidebarProps {
 const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, isEditing, onAvatarChangeClick }) => {
 	return (
 		<Card
+			className="mb-6 text-center bg-white dark:bg-gray-800 0dark:border-gray-600 rounded-lg shadow-lg"
 			style={{ marginBottom: 24, textAlign: "center" }}
 			styles={{
 				body: {
@@ -22,6 +23,7 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, isEditing, onAvat
 			}}>
 			<div style={{ position: "relative", display: "inline-block" }}>
 				<Avatar
+					className="relative inline-block mb-4"
 					size={120}
 					src={
 						user?.avatar ||
@@ -46,28 +48,32 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, isEditing, onAvat
 				)}
 			</div>
 
-			<Title level={4} style={{ marginTop: 16, marginBottom: 4 }}>
+			<Title className="text-gray-900 dark:text-gray-100" level={4} style={{ marginTop: 16, marginBottom: 4 }}>
 				@{user?.username}
 			</Title>
-			<Text type="secondary">
+			<Text type="secondary" className="text-gray-600 dark:text-gray-300">
 				{user?.first_name} {user?.last_name}
 			</Text>
 
-			<Divider style={{ margin: "16px 0" }} />
+			<Divider style={{ margin: "16px 0" }} className="border-gray-200 dark:border-gray-600" />
 
 			<div style={{ textAlign: "left" }}>
 				<div style={{ marginBottom: 12 }}>
-					<Text type="secondary" style={{ fontSize: 13 }}>
+					<Text type="secondary" style={{ fontSize: 13 }} className="text-gray-500 dark:text-gray-400">
 						Email
 					</Text>
-					<div>{user?.email || "No email provided"}</div>
+					<div className="text-gray-900 dark:text-gray-200">
+						{user?.email || "No email provided"}
+					</div>
 				</div>
 
 				<div>
-					<Text type="secondary" style={{ fontSize: 13 }}>
+					<Text type="secondary" style={{ fontSize: 13 }} className="text-gray-500 dark:text-gray-400">
 						Member since
 					</Text>
-					<div>{new Date().getFullYear()}</div>
+					<div className="text-gray-900 dark:text-gray-200">
+						{new Date().getFullYear()}
+					</div>
 				</div>
 			</div>
 		</Card>

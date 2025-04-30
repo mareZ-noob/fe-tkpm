@@ -3,13 +3,11 @@
 interface TextStepProps {
 	textContent: string;
 	setTextContent: (text: string) => void;
-	onNext: () => void;
 }
 
 const TextStep = ({
 	textContent,
 	setTextContent,
-	onNext,
 }: TextStepProps) => {
 	const [paragraphs, setParagraphs] = useState<string[]>([]);
 
@@ -32,7 +30,7 @@ const TextStep = ({
 			{paragraphs.map((para, idx) => (
 				<textarea
 					key={idx}
-					className="w-full h-40 p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300 font-sans text-sm placeholder-gray-400 text-black"
+					className="w-full h-40 p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300 font-sans text-sm placeholder-gray-400 text-black dark:bg-gray-800 dark:text-slate-200 dark:border-slate-700"
 					placeholder={`Paragraph ${idx + 1}`}
 					value={para}
 					onChange={(e) => handleChange(idx, e.target.value)}

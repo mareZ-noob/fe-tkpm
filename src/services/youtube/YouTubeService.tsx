@@ -1,5 +1,5 @@
 import api from "@/configs/axios.config";
-import { AuthStatusResponse, AuthUrlResponse, LogoutResponse, UploadInitiationResponse, UploadStatusResponse, UploadUrlPayload, VideoStatsResponse } from "@/interfaces/youtube/YoutubeInterface";
+import { AuthStatusResponse, AuthUrlResponse, LogoutResponse, UploadInitiationResponse, UploadStatusResponse, UploadUrlPayload, VideoStatsResponse } from "@/interfaces/youtube/YouTubeInterface";
 
 class YouTubeService {
 	getAuthorizationUrl = async (): Promise<AuthUrlResponse> => {
@@ -34,7 +34,6 @@ class YouTubeService {
 
 	uploadVideoFromFile = async (formData: FormData): Promise<UploadInitiationResponse> => {
 		try {
-			// Axios automatically sets Content-Type to multipart/form-data for FormData
 			const response = await api.post<UploadInitiationResponse>('/youtube/videos/upload', formData);
 			return response.data;
 		} catch (error) {
@@ -45,7 +44,6 @@ class YouTubeService {
 
 	uploadVideoFromUrl = async (payload: UploadUrlPayload): Promise<UploadInitiationResponse> => {
 		try {
-			// Ensure Content-Type is application/json (default for Axios post with object)
 			const response = await api.post<UploadInitiationResponse>('/youtube/videos/upload', payload);
 			return response.data;
 		} catch (error) {

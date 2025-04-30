@@ -1,711 +1,354 @@
-"use client"
+import React, { useState, useEffect } from "react";
+import { AlertCircle, ExternalLink, FileText, Loader2, Video, Youtube } from 'lucide-react';
 
-import type React from "react"
+import DocumentService from "@/services/document/DocumentService";
+import VideoService from "@/services/video/VideoService";
+import YoutubeService from "@/services/youtube/YouTubeService";
 
-import { useState, useEffect } from "react"
-import { FileText, Star, Clock, Eye, ThumbsUp, BarChart2, Youtube } from 'lucide-react'
-import { Line } from "react-chartjs-2"
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ChartOptions,
-} from "chart.js"
+import { BaseDocument } from "@/interfaces/document/DocumentInterface";
+import { BaseVideo } from "@/interfaces/video/VideoInterface";
+import { AuthStatusResponse, VideoStat } from "@/interfaces/youtube/YouTubeInterface";
 
-// Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+import RecentItemsSection from "@/components/section/RecentItemsSection";
+import StatCard from "@/components/card/StatCard";
+import MonthlyCreationChart from "@/components/chart/MonthlyCreationChart";
+import { StarOutlined, StarFilled, ClockCircleOutlined } from "@ant-design/icons";
+import YouTubeVideoCard from "@/components/card/YouTubeVideoCard";
+import PageLayout from "@/layouts/PageLayout";
+import { Button, Card, Typography } from "antd";
+import TextFileIcon from "@/components/icon/TextFileIcon";
+import { FormatRelativeTime } from "@/utils/FormatRelativeTime";
+import VideoFileIcon from "@/components/icon/VideoFileIcon";
 
-// Sample document data
-const sampleDocuments = [
-  {
-    id: "doc1",
-    title: "Project Proposal",
-    content: "This is a project proposal for the new marketing campaign...",
-    starred: true,
-    updated_at: "2023-04-15T10:30:00Z",
-    views: 245,
-    likes: 18,
-    created_at: "2023-05-15T10:30:00Z",
-  },
-  {
-    id: "doc2",
-    title: "Meeting Notes",
-    content: "Notes from the quarterly planning meeting with stakeholders...",
-    starred: false,
-    updated_at: "2023-04-10T14:20:00Z",
-    views: 132,
-    likes: 7,
-    created_at: "2023-02-10T14:20:00Z",
-  },
-  {
-    id: "doc3",
-    title: "Research Findings",
-    content: "Key findings from the market research conducted in Q1...",
-    starred: true,
-    updated_at: "2023-04-05T09:15:00Z",
-    views: 310,
-    likes: 24,
-    created_at: "2023-09-05T09:15:00Z",
-  },
-  {
-    id: "doc4",
-    title: "Product Roadmap",
-    content: "Detailed roadmap for product development in the next 6 months...",
-    starred: false,
-    updated_at: "2023-04-01T16:45:00Z",
-    views: 189,
-    likes: 15,
-    created_at: "2023-09-01T16:45:00Z",
-  },
-  {
-    id: "doc5",
-    title: "Budget Planning",
-    content: "Budget planning for the next fiscal year...",
-    starred: true,
-    updated_at: "2023-05-12T11:30:00Z",
-    views: 156,
-    likes: 12,
-    created_at: "2023-05-12T11:30:00Z",
-  },
-  {
-    id: "doc6",
-    title: "Marketing Strategy",
-    content: "Comprehensive marketing strategy for Q3...",
-    starred: false,
-    updated_at: "2023-06-18T13:45:00Z",
-    views: 203,
-    likes: 19,
-    created_at: "2023-06-18T13:45:00Z",
-  },
-  {
-    id: "doc7",
-    title: "User Research",
-    content: "Results from the latest user research study...",
-    starred: true,
-    updated_at: "2023-07-22T09:20:00Z",
-    views: 278,
-    likes: 31,
-    created_at: "2023-07-22T09:20:00Z",
-  },
-  {
-    id: "doc8",
-    title: "Competitor Analysis",
-    content: "Detailed analysis of our main competitors...",
-    starred: false,
-    updated_at: "2023-08-05T15:10:00Z",
-    views: 192,
-    likes: 14,
-    created_at: "2023-08-05T15:10:00Z",
-  },
-  {
-    id: "doc9",
-    title: "Product Launch Plan",
-    content: "Comprehensive plan for the upcoming product launch...",
-    starred: true,
-    updated_at: "2023-09-14T10:45:00Z",
-    views: 325,
-    likes: 28,
-    created_at: "2023-09-14T10:45:00Z",
-  },
-  {
-    id: "doc10",
-    title: "Annual Report",
-    content: "Annual report summarizing company performance...",
-    starred: false,
-    updated_at: "2023-10-30T14:30:00Z",
-    views: 412,
-    likes: 36,
-    created_at: "2023-10-30T14:30:00Z",
-  },
-  {
-    id: "doc11",
-    title: "Team Structure",
-    content: "Proposed restructuring of the development team...",
-    starred: true,
-    updated_at: "2023-11-08T11:20:00Z",
-    views: 178,
-    likes: 22,
-    created_at: "2023-11-08T11:20:00Z",
-  },
-  {
-    id: "doc12",
-    title: "Year-End Review",
-    content: "Year-end review of all projects and initiatives...",
-    starred: false,
-    updated_at: "2023-12-20T16:15:00Z",
-    views: 267,
-    likes: 29,
-    created_at: "2023-12-20T16:15:00Z",
-  },
-]
+const DashboardPage = () => {
+	const [documents, setDocuments] = useState<BaseDocument[]>([]);
+	const [isLoadingDocs, setIsLoadingDocs] = useState(true);
+	const [docError, setDocError] = useState<string | null>(null);
 
-// Sample YouTube video data
-const sampleVideos = [
-  {
-    id: "vid1",
-    title: "Introduction to React 18",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "React Team",
-    views: 125000,
-    likes: 8700,
-    published_at: "2023-01-12T08:30:00Z",
-    duration: "10:24",
-    created_at: "2023-06-12T08:30:00Z",
-  },
-  {
-    id: "vid2",
-    title: "Building Modern UIs with React and Tailwind",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "Frontend Masters",
-    views: 87000,
-    likes: 6200,
-    published_at: "2023-02-08T14:15:00Z",
-    duration: "15:36",
-    created_at: "2023-02-08T14:15:00Z",
-  },
-  {
-    id: "vid3",
-    title: "Data Visualization Techniques for Dashboards",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "Data Science Pro",
-    views: 45000,
-    likes: 3100,
-    published_at: "2023-03-05T11:45:00Z",
-    duration: "12:18",
-    created_at: "2023-10-05T11:45:00Z",
-  },
-  {
-    id: "vid4",
-    title: "Advanced TypeScript Patterns",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "TypeScript Talks",
-    views: 62000,
-    likes: 4800,
-    published_at: "2023-04-02T09:20:00Z",
-    duration: "18:42",
-    created_at: "2023-04-02T09:20:00Z",
-  },
-  {
-    id: "vid5",
-    title: "Mastering CSS Grid Layout",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "CSS Masters",
-    views: 73000,
-    likes: 5400,
-    published_at: "2023-05-15T13:10:00Z",
-    duration: "14:52",
-    created_at: "2023-05-15T13:10:00Z",
-  },
-  {
-    id: "vid6",
-    title: "State Management in React Applications",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "React Experts",
-    views: 91000,
-    likes: 7200,
-    published_at: "2023-06-22T10:30:00Z",
-    duration: "20:15",
-    created_at: "2023-06-22T10:30:00Z",
-  },
-  {
-    id: "vid7",
-    title: "Building Responsive Web Applications",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "Web Dev Simplified",
-    views: 68000,
-    likes: 5100,
-    published_at: "2023-07-18T15:45:00Z",
-    duration: "16:30",
-    created_at: "2023-07-18T15:45:00Z",
-  },
-  {
-    id: "vid8",
-    title: "JavaScript Performance Optimization",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "JS Performance",
-    views: 54000,
-    likes: 4300,
-    published_at: "2023-08-09T11:20:00Z",
-    duration: "22:48",
-    created_at: "2023-08-09T11:20:00Z",
-  },
-  {
-    id: "vid9",
-    title: "Building APIs with Node.js",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "Node Masters",
-    views: 82000,
-    likes: 6500,
-    published_at: "2023-09-14T09:15:00Z",
-    duration: "25:10",
-    created_at: "2023-09-14T09:15:00Z",
-  },
-  {
-    id: "vid10",
-    title: "Introduction to Web3 Development",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "Web3 Devs",
-    views: 105000,
-    likes: 8100,
-    published_at: "2023-10-28T14:40:00Z",
-    duration: "19:35",
-    created_at: "2023-10-28T14:40:00Z",
-  },
-  {
-    id: "vid11",
-    title: "Accessibility in Web Applications",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "A11y Experts",
-    views: 47000,
-    likes: 3900,
-    published_at: "2023-11-05T10:50:00Z",
-    duration: "17:22",
-    created_at: "2023-11-05T10:50:00Z",
-  },
-  {
-    id: "vid12",
-    title: "Year in Review: Web Development Trends",
-    thumbnail: "https://placehold.co/320x180",
-    channel: "Web Dev Trends",
-    views: 93000,
-    likes: 7400,
-    published_at: "2023-12-18T13:25:00Z",
-    duration: "28:15",
-    created_at: "2023-12-18T13:25:00Z",
-  },
-]
+	const [videos, setVideos] = useState<BaseVideo[]>([]);
+	const [isLoadingVideos, setIsLoadingVideos] = useState(true);
+	const [videoError, setVideoError] = useState<string | null>(null);
 
-// Format relative time
-const formatRelativeTime = (dateString: string) => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+	const [youtubeVideos, setYoutubeVideos] = useState<VideoStat[]>([]);
+	const [isLoadingYouTubeVideos, setIsLoadingYouTubeVideos] = useState(true);
+	const [youTubeVideoError, setYouTubeVideoError] = useState<string | null>(null);
+	const [isYouTubeAuthenticated, setIsYouTubeAuthenticated] = useState<boolean | null>(null); // Initial state null (unknown)
+	const [isLoadingAuthStatus, setIsLoadingAuthStatus] = useState(true); // Loading state for auth check
+	const [isConnectingYouTube, setIsConnectingYouTube] = useState(false);
 
-  if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
-  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`
-  if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`
-  return `${Math.floor(diffInSeconds / 31536000)} years ago`
+
+	useEffect(() => {
+		const fetchDocuments = async () => {
+			setIsLoadingDocs(true);
+			setDocError(null);
+			try {
+				const data = await DocumentService.getDocuments();
+				setDocuments(data || []);
+			} catch (error: any) {
+				console.error("Failed to fetch documents:", error);
+				setDocError(error.message || "Could not load documents.");
+				setDocuments([]);
+			} finally {
+				setIsLoadingDocs(false);
+			}
+		};
+
+		const fetchVideos = async () => {
+			setIsLoadingVideos(true);
+			setVideoError(null);
+			try {
+				const data = await VideoService.getVideos();
+				setVideos(Array.isArray(data) ? data : []);
+			} catch (error: any) {
+				console.error("Failed to fetch local videos:", error);
+				setVideoError(error.message || "Could not load local videos.");
+				setVideos([]);
+			} finally {
+				setIsLoadingVideos(false);
+			}
+		};
+
+		const checkYouTubeAuth = async () => {
+			setIsLoadingAuthStatus(true);
+			try {
+				const status: AuthStatusResponse = await YoutubeService.getAuthenticationStatus();
+				setIsYouTubeAuthenticated(status.is_authenticated);
+				if (status.is_authenticated) {
+					fetchYouTubeVideos();
+				} else {
+					setIsLoadingYouTubeVideos(false);
+					setYoutubeVideos([]);
+				}
+			} catch (error: any) {
+				console.error("Failed to check YouTube auth status:", error);
+				setIsYouTubeAuthenticated(false);
+				setYouTubeVideoError("Could not verify YouTube connection status.");
+				setIsLoadingYouTubeVideos(false);
+			} finally {
+				setIsLoadingAuthStatus(false);
+			}
+		};
+
+		const fetchYouTubeVideos = async () => {
+			setIsLoadingYouTubeVideos(true);
+			setYouTubeVideoError(null);
+			try {
+				const data = await YoutubeService.getVideoStats();
+				if (data.success && Array.isArray(data.videos)) {
+					setYoutubeVideos(data.videos);
+				} else {
+					console.error("Failed to fetch YouTube video stats or data format incorrect:", data);
+					setYoutubeVideos([]);
+					setYouTubeVideoError("Could not load YouTube videos or data format incorrect.");
+				}
+			} catch (error: any) {
+				console.error("Failed to fetch YouTube video stats:", error);
+				setYouTubeVideoError(error.message || "Could not load YouTube videos.");
+				setYoutubeVideos([]);
+			} finally {
+				setIsLoadingYouTubeVideos(false);
+			}
+		};
+
+
+		fetchDocuments();
+		fetchVideos();
+		checkYouTubeAuth();
+
+	}, []);
+
+	const handleYouTubeConnect = async () => {
+		setIsConnectingYouTube(true);
+		setYouTubeVideoError(null);
+		try {
+			const response = await YoutubeService.getAuthorizationUrl();
+			if (response.auth_url) {
+				window.location.href = response.auth_url;
+			} else {
+				throw new Error("Authorization URL not received.");
+			}
+		} catch (error: any) {
+			console.error("Failed to get YouTube authorization URL:", error);
+			setYouTubeVideoError(error.message || "Could not initiate YouTube connection.");
+			setIsConnectingYouTube(false);
+		}
+	};
+
+	const renderYouTubeSection = () => {
+		if (isLoadingAuthStatus) {
+			return (
+				<div className="flex justify-center items-center h-40 text-gray-500">
+					<Loader2 className="h-6 w-6 animate-spin mr-2" />
+					<span>Checking YouTube connection...</span>
+				</div>
+			);
+		}
+
+		if (isYouTubeAuthenticated === false) {
+			return (
+				<div className="bg-white rounded-lg border shadow-sm p-6 flex flex-col items-center text-center">
+					<Youtube className="h-12 w-12 text-red-500 mb-4" />
+					<h3 className="text-lg font-semibold mb-2">Connect to YouTube</h3>
+					<p className="text-sm text-gray-600 mb-4">
+						Link your YouTube account to view your video statistics and manage uploads directly from the dashboard.
+					</p>
+					{youTubeVideoError && (
+						<div className="text-xs text-red-600 mb-3 flex items-center">
+							<AlertCircle className="h-4 w-4 mr-1" /> {youTubeVideoError}
+						</div>
+					)}
+					<button
+						onClick={handleYouTubeConnect}
+						disabled={isConnectingYouTube}
+						className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed`}
+					>
+						{isConnectingYouTube ? (
+							<>
+								<Loader2 className="animate-spin h-4 w-4 mr-2" /> Connecting...
+							</>
+						) : (
+							<>
+								<ExternalLink className="h-4 w-4 mr-2" /> Connect YouTube Account
+							</>
+						)}
+					</button>
+				</div>
+			);
+		}
+
+		return (
+			<RecentItemsSection
+				title="Recent YouTube Videos"
+				items={youtubeVideos}
+				isLoading={isLoadingYouTubeVideos}
+				error={youTubeVideoError && !isConnectingYouTube ? youTubeVideoError : null}
+				sortBy="publishedAt"
+				renderItem={(item) => <YouTubeVideoCard video={item as VideoStat} />}
+				maxItems={3}
+				emptyStateMessage="No YouTube videos found or failed to load stats."
+			/>
+		);
+	};
+
+	return (
+		<PageLayout
+			title="Dashboard"
+			description="Overview of your documents and videos"
+		>
+			<div className="container mx-auto">
+				<div className="flex flex-col gap-8">
+					{/* Statistics Section */}
+					<div className="grid gap-4 md:grid-cols-3">
+						<StatCard
+							title="Total Documents"
+							value={isLoadingDocs ? "..." : documents.length}
+							icon={<FileText className="h-5 w-5 text-blue-500 dark:text-blue-400" />}
+						/>
+						<StatCard
+							title="Total Local Videos"
+							value={isLoadingVideos ? "..." : videos.length}
+							icon={<Video className="h-5 w-5 text-green-500 dark:text-green-400" />}
+						/>
+						<StatCard
+							title="Total YouTube Videos"
+							value={isLoadingAuthStatus ? '...' : (isYouTubeAuthenticated ? (isLoadingYouTubeVideos ? '...' : youtubeVideos.length) : 'N/A')}
+							icon={<Youtube className={`h-5 w-5 ${isYouTubeAuthenticated === false ? 'text-gray-400 dark:text-gray-500' : 'text-red-500 dark:text-red-400'}`} />}
+						/>
+					</div>
+
+					{/* Monthly Creation Charts */}
+					<MonthlyCreationChart
+						documents={documents}
+						videos={videos}
+						youtubeVideos={isYouTubeAuthenticated === true ? youtubeVideos : []}
+					/>
+
+					{/* Recent Documents Section */}
+					<RecentItemsSection
+						title="Recent Documents"
+						items={documents}
+						isLoading={isLoadingDocs}
+						error={docError}
+						sortBy="updated_at"
+						renderItem={(file) => (
+							<Card
+								hoverable
+								className="bg-white dark:bg-gray-800 dark:border-gray-600 shadow-lg"
+								style={{ borderRadius: 8, overflow: "hidden", height: "100%" }}
+								styles={{ body: { padding: 0, height: "100%", display: "flex", flexDirection: "column" } }}
+							// onClick={() => openDocument(file)}
+							>
+								<TextFileIcon content={file.content} />
+								<div className="p-3 flex flex-col gap-2 flex-grow" style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8, flexGrow: 1 }}>
+									<div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+										<Typography.Text
+											strong
+											className="text-gray-900 dark:text-gray-100"
+											style={{
+												fontSize: 15,
+												lineHeight: 1.4,
+												overflow: "hidden",
+												textOverflow: "ellipsis",
+												whiteSpace: "nowrap",
+												maxWidth: "calc(100% - 24px)",
+											}}
+										>
+											{file.title || "Untitled"}
+										</Typography.Text>
+										<Button
+											type="text"
+											size="small"
+											icon={
+												file.starred ? (
+													<StarFilled className="text-yellow-500 dark:text-yellow-400" />
+												) : (
+													<StarOutlined className="text-gray-600 dark:text-gray-300" />
+												)
+											}
+										// onClick={(e) => toggleDocumentStar(file.id, e)}
+										/>
+									</div>
+									<div className="flex items-center gap-2 mt-auto" style={{ display: "flex", alignItems: "center", gap: 8, marginTop: "auto" }}>
+										<ClockCircleOutlined className="text-gray-500 dark:text-gray-400" style={{ fontSize: 12, color: "#8c8c8c" }} />
+										<Typography.Text className="text-gray-500 dark:text-gray-400" type="secondary" style={{ fontSize: 12 }}>
+											{FormatRelativeTime(file.updated_at)}
+										</Typography.Text>
+									</div>
+								</div>
+							</Card>
+						)}
+						maxItems={3}
+					/>
+
+					<hr className="my-4 border-gray-200" />
+
+					{/* Recent Local Videos Section */}
+					<RecentItemsSection
+						title="Recent Local Videos"
+						items={videos}
+						isLoading={isLoadingVideos}
+						error={videoError}
+						sortBy="updated_at"
+						renderItem={(video) => (
+							<Card
+								hoverable
+								className="bg-white dark:bg-gray-800 dark:border-gray-600 shadow-lg"
+								style={{ borderRadius: 8, overflow: "hidden", height: "100%" }}
+								styles={{ body: { padding: 0, height: "100%", display: "flex", flexDirection: "column" } }}
+							// onClick={() => openVideo(video)}
+							>
+								<VideoFileIcon />
+								<div className="p-3 flex flex-col gap-2 flex-grow" style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8, flexGrow: 1 }}>
+									<div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+										<Typography.Text
+											strong
+											className="text-gray-900 dark:text-gray-100"
+											style={{
+												fontSize: 15,
+												lineHeight: 1.4,
+												overflow: "hidden",
+												textOverflow: "ellipsis",
+												whiteSpace: "nowrap",
+												maxWidth: "calc(100% - 24px)",
+											}}
+										>
+											{video.title || "Untitled"}
+										</Typography.Text>
+										<Button
+											type="text"
+											size="small"
+											icon={
+												video.starred ? (
+													<StarFilled className="text-yellow-500 dark:text-yellow-400" />
+												) : (
+													<StarOutlined className="text-gray-600 dark:text-gray-300" />
+												)
+											}
+										// onClick={(e) => toggleVideoStar(video.id, e)}
+										/>
+									</div>
+									<div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: "auto" }}>
+										<ClockCircleOutlined className="text-gray-500 dark:text-gray-400" style={{ fontSize: 12, color: "#8c8c8c" }} />
+										<Typography.Text className="text-gray-500 dark:text-gray-400" type="secondary" style={{ fontSize: 12 }}>
+											{FormatRelativeTime(video.updated_at)}
+										</Typography.Text>
+									</div>
+								</div>
+							</Card>
+						)}
+						maxItems={3}
+						emptyStateMessage="No local videos found."
+					/>
+
+					<hr className="my-4 border-gray-200" />
+
+					{/* YouTube Videos Section */}
+					{renderYouTubeSection()}
+
+				</div>
+			</div>
+		</PageLayout>
+	);
 }
 
-// Format view count
-const formatViewCount = (count: number) => {
-  if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`
-  if (count >= 1000) return `${(count / 1000).toFixed(1)}K`
-  return count.toString()
-}
-
-// Get month name from date
-const getMonthName = (date: Date): string => {
-  return date.toLocaleString('default', { month: 'short' })
-}
-
-// Generate monthly data for documents and videos
-const generateMonthlyData = () => {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-  // Count documents by month
-  const documentsByMonth = Array(12).fill(0)
-  sampleDocuments.forEach(doc => {
-    const date = new Date(doc.created_at)
-    const month = date.getMonth()
-    documentsByMonth[month]++
-  })
-
-  // Count videos by month
-  const videosByMonth = Array(12).fill(0)
-  sampleVideos.forEach(video => {
-    const date = new Date(video.created_at)
-    const month = date.getMonth()
-    videosByMonth[month]++
-  })
-
-  return {
-    labels: months,
-    documentData: documentsByMonth,
-    videoData: videosByMonth
-  }
-}
-
-function App() {
-  const [randomDocs, setRandomDocs] = useState<typeof sampleDocuments>([])
-  const [randomVideos, setRandomVideos] = useState<typeof sampleVideos>([])
-  const [activeTab, setActiveTab] = useState("all")
-  const [monthlyData, setMonthlyData] = useState(() => generateMonthlyData())
-
-  // Simulate fetching random documents and videos
-  useEffect(() => {
-    // Get 3 random documents
-    const shuffledDocs = [...sampleDocuments].sort(() => 0.5 - Math.random())
-    setRandomDocs(shuffledDocs.slice(0, 3))
-
-    // Get 3 random videos
-    const shuffledVideos = [...sampleVideos].sort(() => 0.5 - Math.random())
-    setRandomVideos(shuffledVideos.slice(0, 3))
-
-    // Generate monthly data
-    setMonthlyData(generateMonthlyData())
-  }, [])
-
-  return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-gray-500">View your recent documents and recommended videos</p>
-        </div>
-
-        <div className="w-full">
-          <div className="flex items-center justify-between">
-            <div className="flex bg-gray-100 rounded-lg p-1">
-              <button
-                className={`px-4 py-2 rounded-md text-sm font-medium ${
-                  activeTab === "all" ? "bg-white shadow" : "text-gray-500"
-                }`}
-                onClick={() => setActiveTab("all")}
-              >
-                All
-              </button>
-              <button
-                className={`px-4 py-2 rounded-md text-sm font-medium ${
-                  activeTab === "documents" ? "bg-white shadow" : "text-gray-500"
-                }`}
-                onClick={() => setActiveTab("documents")}
-              >
-                Documents
-              </button>
-              <button
-                className={`px-4 py-2 rounded-md text-sm font-medium ${
-                  activeTab === "videos" ? "bg-white shadow" : "text-gray-500"
-                }`}
-                onClick={() => setActiveTab("videos")}
-              >
-                Videos
-              </button>
-            </div>
-
-          </div>
-
-          <div className="mt-6">
-            {activeTab === "all" && (
-              <div className="grid gap-6">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold">Recent Documents</h2>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-3">
-                    {randomDocs.map((doc) => (
-                      <DocumentCard key={doc.id} document={doc} />
-                    ))}
-                  </div>
-                </div>
-
-                <hr className="my-4" />
-
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold">Recommended Videos</h2>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-3">
-                    {randomVideos.map((video) => (
-                      <VideoCard key={video.id} video={video} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "documents" && (
-              <div className="grid gap-4 md:grid-cols-3">
-                {sampleDocuments.map((doc) => (
-                  <DocumentCard key={doc.id} document={doc} />
-                ))}
-              </div>
-            )}
-
-            {activeTab === "videos" && (
-              <div className="grid gap-4 md:grid-cols-3">
-                {sampleVideos.map((video) => (
-                  <VideoCard key={video.id} video={video} />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-          <StatCardWithChart
-            title="Documents Created by Month"
-            value={sampleDocuments.length}
-            icon={<FileText className="h-4 w-4 text-blue-500" />}
-            trend={+12}
-            chartData={{
-              labels: monthlyData.labels,
-              datasets: [
-                {
-                  label: 'Documents',
-                  data: monthlyData.documentData,
-                  borderColor: '#3b82f6',
-                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                  tension: 0.4,
-                  fill: true,
-                }
-              ]
-            }}
-          />
-          <StatCardWithChart
-            title="Videos Created by Month"
-            value={sampleVideos.length}
-            icon={<Youtube className="h-4 w-4 text-red-500" />}
-            trend={+8}
-            chartData={{
-              labels: monthlyData.labels,
-              datasets: [
-                {
-                  label: 'Videos',
-                  data: monthlyData.videoData,
-                  borderColor: '#ef4444',
-                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                  tension: 0.4,
-                  fill: true,
-                }
-              ]
-            }}
-          />
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-          <StatCard
-            title="Total Views"
-            value={formatViewCount(
-              sampleDocuments.reduce((sum, doc) => sum + doc.views, 0) +
-                sampleVideos.reduce((sum, video) => sum + video.views, 0),
-            )}
-            icon={<Eye className="h-4 w-4 text-green-500" />}
-            trend={+24}
-          />
-          <StatCard
-            title="Total Likes"
-            value={formatViewCount(
-              sampleDocuments.reduce((sum, doc) => sum + doc.likes, 0) +
-                sampleVideos.reduce((sum, video) => sum + video.likes, 0),
-            )}
-            icon={<ThumbsUp className="h-4 w-4 text-yellow-500" />}
-            trend={+18}
-          />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-interface DocumentCardProps {
-  document: {
-    id: string
-    title: string
-    content: string
-    starred: boolean
-    updated_at: string
-    views: number
-    likes: number
-  }
-}
-
-function DocumentCard({ document }: DocumentCardProps) {
-  return (
-    <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-      <div className="p-4 pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <FileText className="h-4 w-4 text-blue-600" />
-            </div>
-            <h3 className="font-medium">{document.title}</h3>
-          </div>
-          {document.starred && <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />}
-        </div>
-      </div>
-      <div className="px-4">
-        <p className="text-sm text-gray-500 line-clamp-2 h-10">{document.content}</p>
-      </div>
-      <div className="px-4 py-3 flex justify-between border-t mt-3 text-xs text-gray-500">
-        <div className="flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          <span>{formatRelativeTime(document.updated_at)}</span>
-        </div>
-        <div className="flex gap-3">
-          <div className="flex items-center gap-1">
-            <Eye className="h-3 w-3" />
-            <span>{formatViewCount(document.views)}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <ThumbsUp className="h-3 w-3" />
-            <span>{document.likes}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-interface VideoCardProps {
-  video: {
-    id: string
-    title: string
-    thumbnail: string
-    channel: string
-    views: number
-    likes: number
-    published_at: string
-    duration: string
-  }
-}
-
-function VideoCard({ video }: VideoCardProps) {
-  return (
-    <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-      <div className="relative">
-        <img
-          src={video.thumbnail || "/placeholder.svg"}
-          alt={video.title}
-          className="w-full object-cover aspect-video"
-        />
-        <span className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-1 py-0.5 rounded">
-          {video.duration}
-        </span>
-      </div>
-      <div className="p-4 pb-2">
-        <h3 className="font-medium text-base line-clamp-1">{video.title}</h3>
-        <p className="text-sm text-gray-500">{video.channel}</p>
-      </div>
-      <div className="px-4 pb-4 flex justify-between text-xs text-gray-500">
-        <div className="flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          <span>{formatRelativeTime(video.published_at)}</span>
-        </div>
-        <div className="flex gap-3">
-          <div className="flex items-center gap-1">
-            <Eye className="h-3 w-3" />
-            <span>{formatViewCount(video.views)}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <ThumbsUp className="h-3 w-3" />
-            <span>{formatViewCount(video.likes)}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-interface StatCardProps {
-  title: string
-  value: string | number
-  icon: React.ReactNode
-  trend: number
-}
-
-function StatCard({ title, value, icon, trend }: StatCardProps) {
-  return (
-    <div className="bg-white rounded-lg border shadow-sm p-4">
-      <div className="flex items-center justify-between pb-2">
-        <h3 className="text-sm font-medium">{title}</h3>
-        {icon}
-      </div>
-      <div>
-        <div className="text-2xl font-bold">{value}</div>
-        <p className="text-xs text-gray-500 mt-1 flex items-center">
-          <span className={trend > 0 ? "text-green-500" : "text-red-500"}>
-            {trend > 0 ? "+" : ""}
-            {trend}%
-          </span>
-          <span className="ml-1">from last month</span>
-        </p>
-      </div>
-    </div>
-  )
-}
-
-interface ChartData {
-  labels: string[]
-  datasets: {
-    label: string
-    data: number[]
-    borderColor: string
-    backgroundColor: string
-    tension: number
-    fill: boolean
-  }[]
-}
-
-interface StatCardWithChartProps extends StatCardProps {
-  chartData: ChartData
-}
-
-function StatCardWithChart({ title, value, icon, trend, chartData }: StatCardWithChartProps) {
-  const chartOptions: ChartOptions<'line'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        mode: 'index',
-        intersect: false,
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: 'rgba(0, 0, 0, 0.05)',
-        },
-        ticks: {
-          precision: 0,
-        },
-      },
-    },
-    elements: {
-      point: {
-        radius: 3,
-        hoverRadius: 5,
-      },
-    },
-  }
-
-  return (
-    <div className="bg-white rounded-lg border shadow-sm p-4">
-      <div className="flex items-center justify-between pb-2">
-        <h3 className="text-sm font-medium">{title}</h3>
-        {icon}
-      </div>
-      <div>
-        <div className="text-2xl font-bold">{value}</div>
-        <p className="text-xs text-gray-500 mt-1 mb-4 flex items-center">
-          <span className={trend > 0 ? "text-green-500" : "text-red-500"}>
-            {trend > 0 ? "+" : ""}
-            {trend}%
-          </span>
-          <span className="ml-1">from last month</span>
-        </p>
-        <div className="h-48">
-          <Line data={chartData} options={chartOptions} />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default App
+export default DashboardPage;

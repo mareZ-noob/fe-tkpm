@@ -27,6 +27,7 @@ const VideoEditor: React.FC<VideoEditorProps> = ({ initialContent = "", initialS
 	const [isProcessingAudio, setIsProcessingAudio] = useState(false);
 	const [audioProcessingError, setAudioProcessingError] = useState<string | null>(null);
 	const [isGeneratingScript, setIsGeneratingScript] = useState(false);
+	const [scriptGenerationError, setScriptGenerationError] = useState<string | null>(null);
 	const audioStepRef = useRef<AudioStepHandle>(null);
 
 	useEffect(() => {
@@ -92,6 +93,21 @@ const VideoEditor: React.FC<VideoEditorProps> = ({ initialContent = "", initialS
 		}
 	};
 
+	const handleScriptGenerated = (success: boolean, script: string | null, errorMsg: string | null = null) => {
+        setIsGeneratingScript(false);
+        setTriggerFetchSummary(false);
+
+        if (success && script !== null) {
+            console.log("Script generated successfully, proceeding to Text Step.");
+            setTextContent(script);
+            setCurrentStep(2);
+            setScriptGenerationError(null);
+        } else {
+            console.error("Script generation failed:", errorMsg);
+            setScriptGenerationError(errorMsg || "Failed to generate script.");
+        }
+    };
+
 	const handleNextStep = async () => {
 		setAudioProcessingError(null);
 
@@ -147,7 +163,8 @@ const VideoEditor: React.FC<VideoEditorProps> = ({ initialContent = "", initialS
 				<PromptStep
 					textContent={textContent}
 					setTextContent={setTextContent}
-					onNext={handleNextStep}
+					// onNext={handleNextStep}
+					onGenerationComplete={handleScriptGenerated}
 					triggerFetchSummary={triggerFetchSummary}
 					setIsGeneratingScript={setIsGeneratingScript}
 					{...props}
@@ -217,14 +234,14 @@ const VideoEditor: React.FC<VideoEditorProps> = ({ initialContent = "", initialS
 	};
 
 	return (
-		<div className="p-6 rounded-lg w-full mx-auto flex flex-col bg-purple-50 dark:bg-slate-900">
-			<div className="flex items-center gap-2 mb-4">
+		<div className="p-6 rounded-lg w-full mx-auto flex flex-col bg-purple-50 dark:bg-gray-800 border border-purple-200 dark:border-slate-700 shadow-md">
+			{/* <div className="flex items-center gap-2 mb-4">
 				<VideoIcon className="text-purple-600 dark:text-purple-400" size={24} />
 				<h2 className="text-xl font-semibold text-purple-600 dark:text-purple-400">Video</h2>
-			</div>
+			</div> */}
 
 			<div className="mb-6">
-				<h3 className="text-purple-600 dark:text-purple-400 mb-4">Step</h3>
+				<h3 className="text-purple-600 dark:text-purple-400 mb-4 text-xl">Step</h3>
 				<div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm dark:border dark:border-slate-700">
 					<div className="relative w-full">
 						{/* Connector Lines */}
@@ -264,7 +281,7 @@ const VideoEditor: React.FC<VideoEditorProps> = ({ initialContent = "", initialS
 			</div>
 
 			<div className="mb-4">
-				<h3 className="text-purple-600 mb-4">
+				<h3 className="text-purple-600 dark:text-purple-400 mb-4 text-xl">
 					{steps[currentStep - 1].name}
 				</h3>
 				{currentStep === 3 && audioProcessingError && (
@@ -272,7 +289,7 @@ const VideoEditor: React.FC<VideoEditorProps> = ({ initialContent = "", initialS
 						<strong>Audio Error:</strong> {audioProcessingError}
 					</div>
 				)}
-				<div className="bg-white p-4 rounded-lg">
+				<div className="bg-white p-4 rounded-lg dark:bg-slate-800 shadow-sm dark:border dark:border-slate-700 dark:text-slate-200">
 					{steps[currentStep - 1].component({})}
 				</div>
 			</div>

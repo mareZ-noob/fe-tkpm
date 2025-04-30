@@ -45,6 +45,7 @@ const ItemModal = <T extends { updated_at: string },>({
 				icon={<EditOutlined />}
 				onClick={onEditToggle}
 				style={{ display: isEditing ? "none" : "inline-flex" }}
+				className="items-center dark:text-gray-200 dark:bg-slate-700 dark:hover:bg-gray-700 dark:hover:text-white"
 			>
 				Edit
 			</Button>
@@ -131,7 +132,7 @@ const ItemModal = <T extends { updated_at: string },>({
 									}}
 								>
 									<Space>
-										<Text type="secondary" style={{ fontSize: 13 }}>
+										<Text type="secondary" style={{ fontSize: 13 }} className="dark:text-gray-400">
 											<ClockCircleOutlined style={{ marginRight: 4 }} />
 											Last modified: {new Date(item.updated_at).toLocaleString()}
 										</Text>
@@ -153,9 +154,15 @@ const ItemModal = <T extends { updated_at: string },>({
 													onClick: () => item && onDelete && onDelete(item)
 												},
 											],
+											className: "bg-white dark:bg-gray-800 dark:border-gray-600",
 										}}
+										overlayClassName="rounded-md shadow-lg [&_.ant-dropdown-menu-item]:text-gray-900 [&_.ant-dropdown-menu-item]:dark:text-gray-100 [&_.ant-dropdown-menu-item:hover]:bg-gray-100 [&_.ant-dropdown-menu-item:hover]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:bg-gray-100 [&_.ant-dropdown-menu-item:focus]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:ring-2 [&_.ant-dropdown-menu-item:focus]:ring-blue-500 [&_.ant-dropdown-menu-item:focus]:dark:ring-blue-400 [&_.ant-dropdown-menu-item-selected]:bg-blue-50 [&_.ant-dropdown-menu-item-selected]:dark:bg-blue-900/50 [&_.ant-dropdown-menu-item-selected]:text-blue-600 [&_.ant-dropdown-menu-item-selected]:dark:text-blue-300"
 									>
-										<Button type="text" icon={<EllipsisOutlined />} />
+										<Button
+											className="bg-white dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+											type="text"
+											icon={<EllipsisOutlined />}
+										/>
 									</Dropdown>
 								</div>
 								<div style={{ maxHeight: "60vh", overflowY: "auto", padding: "24px" }}>

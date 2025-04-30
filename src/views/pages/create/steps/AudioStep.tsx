@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from "re
 import TtsService from "@/services/tts/TtsService";
 import type { VoiceData } from "@/interfaces/voice/VoiceInterface";
 import { Loader2, Play, Square, UploadCloud, XCircle } from "lucide-react";
+import clsx from "clsx";
 
 interface AudioStepProps {
 	textContent: string;
@@ -578,18 +579,21 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 		paragraphs.some((p, i) => p && (selectedVoices[i] || uploadedAudioUrls[i]));
 	const showStopButton = playingIndex !== null || loadingIndex !== null || isReplayingAll;
 
+	const baseSelectClasses = "w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-slate-200 rounded-md px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 dark:focus:ring-purple-600 dark:focus:border-purple-600";
+	const disabledSelectClasses = "disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed";
+
 	return (
-		<div className="space-y-6">
+		<div className="space-y-6 bg-gray-50 dark:bg-gray-800 p-4 sm:p-6 rounded-lg">
 			{/* TTS Options */}
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-700/30">
 				{/* Engine, Language, Gender Selects (unchanged) */}
 				<div>
-					<label htmlFor="engine-select" className="block text-sm font-medium text-gray-700 mb-1">Engine</label>
+					<label htmlFor="engine-select" className="block text-sm font-medium text-gray-700 mb-1 dark:text-slate-200">Engine</label>
 					<select
 						id="engine-select"
 						value={selectedEngine}
 						onChange={handleEngineChange}
-						className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+						className={clsx(baseSelectClasses, disabledSelectClasses)}
 						disabled={globalDisabled || engines.length === 0}
 					>
 						{/* Options */}
@@ -600,12 +604,12 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 				</div>
 
 				<div>
-					<label htmlFor="language-select" className="block text-sm font-medium text-gray-700 mb-1">Language</label>
+					<label htmlFor="language-select" className="block text-sm font-medium text-gray-700 mb-1 dark:text-slate-200">Language</label>
 					<select
 						id="language-select"
 						value={selectedLanguage}
 						onChange={handleLanguageChange}
-						className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+						className={clsx(baseSelectClasses, disabledSelectClasses)}
 						disabled={globalDisabled || !selectedEngine || languages.length === 0}
 					>
 						{/* Options */}
@@ -617,12 +621,12 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 				</div>
 
 				<div>
-					<label htmlFor="gender-select" className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+					<label htmlFor="gender-select" className="block text-sm font-medium text-gray-700 mb-1 dark:text-slate-200">Gender</label>
 					<select
 						id="gender-select"
 						value={selectedGender}
 						onChange={handleGenderChange}
-						className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+						className={clsx(baseSelectClasses, disabledSelectClasses)}
 						disabled={globalDisabled || !selectedLanguage || (voices.length === 0 && !isLoading)}
 					>
 						{/* Options */}
@@ -642,14 +646,32 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 				const hasUploadedAudio = !!uploadedAudioUrls[index];
 				const hasContent = !!para;
 
+				const globalBusy = isLoading || isGenerating || isReplayingAll || loadingIndex !== null || playingIndex !== null;
+				const paragraphGloballyDisabled = globalBusy;
+				const paragraphContentMissing = !hasContent;
 				const baseDisabled = globalDisabled || !hasContent;
 				const ttsControlsDisabled = baseDisabled || hasUploadedAudio;
+				const controlsBaseDisabled = paragraphGloballyDisabled || paragraphContentMissing;
 				const canPlayThis = hasContent && (!!selectedVoices[index] || hasUploadedAudio) && !globalDisabled;
 
 				return (
-					<div key={index} className={`border border-gray-200 rounded-lg p-4 transition-colors duration-300 ${isCurrentLoading ? 'bg-purple-50' : isCurrentPlaying ? (hasUploadedAudio ? 'bg-blue-50' : 'bg-green-50') : 'bg-white'}`}>
-						<p className="mb-3 text-sm text-gray-700 min-h-[20px] cursor-default">
-							{para || <span className="italic text-gray-400">No content for this paragraph</span>}
+					<div
+						key={index}
+						className={clsx(
+							'border', 'border-gray-200', 'dark:border-gray-700', 'rounded-lg', 'p-4', 'transition-colors', 'duration-300',
+							{
+								'bg-purple-50 dark:bg-purple-900/30': isCurrentLoading,
+								'bg-blue-50 dark:bg-blue-900/30': isCurrentPlaying && hasUploadedAudio,
+								'bg-green-50 dark:bg-green-900/30': isCurrentPlaying && !hasUploadedAudio,
+								'bg-white dark:bg-gray-700': !isCurrentLoading && !isCurrentPlaying,
+							}
+						)}
+					>
+						<p className={clsx(
+							"mb-3 text-sm min-h-[40px] cursor-default",
+							hasContent ? "text-gray-800 dark:text-slate-200" : "text-gray-400 dark:text-gray-500 italic"
+						)}>
+							{para || "No content for this paragraph"}
 						</p>
 						{/* Controls Row */}
 						<div className="flex flex-wrap items-center justify-between gap-4">
@@ -662,7 +684,7 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 										id={`voice-select-${index}`}
 										value={selectedVoices[index]}
 										onChange={(e) => handleVoiceChange(index, e.target.value)}
-										className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+										className={clsx(baseSelectClasses, disabledSelectClasses, 'text-xs sm:text-sm')}
 										disabled={ttsControlsDisabled || voices.length === 0 || globalDisabled}
 										title={hasUploadedAudio ? "Using uploaded audio" : "Select TTS voice"}
 									>
@@ -688,7 +710,7 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 										id={`speed-select-${index}`}
 										value={selectedSpeeds[index]}
 										onChange={(e) => handleSpeedChange(index, parseFloat(e.target.value))}
-										className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+										className={clsx(baseSelectClasses, disabledSelectClasses, 'text-xs sm:text-sm py-2 px-2')}
 										disabled={ttsControlsDisabled || globalDisabled}
 										title={hasUploadedAudio ? "Speed control inactive for uploaded audio" : "Select playback speed for TTS"}
 									>
@@ -711,7 +733,7 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 										id={`audio-upload-${index}`}
 										accept=".mp3,audio/mpeg"
 										onChange={(e) => handleFileUpload(index, e)}
-										className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" // Hidden but clickable overlay
+										className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
 										disabled={baseDisabled || globalDisabled}
 										title={hasUploadedAudio ? "Replace uploaded MP3" : "Upload MP3 audio"}
 									/>
@@ -719,12 +741,15 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 									<button
 										type="button"
 										onClick={() => fileInputRefs.current[index]?.click()} // Trigger hidden input
-										className={`flex items-center justify-center gap-1 px-3 py-1 text-sm rounded-md transition w-[90px] h-[38px] ${baseDisabled
-											? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-											: hasUploadedAudio
-												? 'bg-blue-500 text-white hover:bg-blue-600'
-												: 'bg-gray-500 text-white hover:bg-gray-600'
-											}`}
+										className={clsx(
+											"flex items-center justify-center gap-1 px-3 py-1 text-sm font-medium rounded-md transition w-[95px] h-[38px]",
+											'text-white',
+											{
+												'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed': controlsBaseDisabled,
+												'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500': !controlsBaseDisabled && hasUploadedAudio,
+												'bg-gray-300 hover:bg-gray-600 dark:bg-gray-500 dark:hover:bg-gray-400': !controlsBaseDisabled && !hasUploadedAudio,
+											}
+										)}
 										disabled={baseDisabled || globalDisabled}
 										title={hasUploadedAudio ? "Replace uploaded MP3" : "Upload MP3 audio"}
 									>
@@ -737,7 +762,12 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 								{hasUploadedAudio && (
 									<button
 										onClick={() => handleClearUpload(index)}
-										className="flex items-center justify-center p-2 text-sm text-red-500 bg-red-100 rounded-md hover:bg-red-200 hover:text-red-600 transition h-[38px] disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+										className={clsx(
+											"flex items-center justify-center p-2 text-sm rounded-md transition h-[38px]",
+											'bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700',
+											'dark:bg-red-900/40 dark:text-red-400 dark:hover:bg-red-900/60 dark:hover:text-red-300',
+											'disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed'
+										)}
 										disabled={baseDisabled}
 										title="Remove uploaded audio and use TTS"
 									>
@@ -749,7 +779,16 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 								{/* Play/Loading/Stop Button */}
 								{isCurrentLoading ? (
 									<button
-										className="flex items-center justify-center gap-1 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-md w-[90px] h-[38px]" // Keep Loading style consistent
+										className={clsx(
+											"flex items-center justify-center gap-1 px-3 py-1 text-sm font-medium rounded-md transition w-[90px] h-[38px]",
+											{
+												'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 cursor-wait': isCurrentLoading,
+												'bg-red-500 dark:bg-red-600 text-white hover:bg-red-600 dark:hover:bg-red-500': !isCurrentLoading && isCurrentPlaying,
+												'bg-blue-600 dark:bg-blue-700 text-white hover:bg-blue-700 dark:hover:bg-blue-600': !isCurrentLoading && !isCurrentPlaying && canPlayThis && hasUploadedAudio,
+												'bg-purple-600 dark:bg-purple-700 text-white hover:bg-purple-700 dark:hover:bg-purple-600': !isCurrentLoading && !isCurrentPlaying && canPlayThis && !hasUploadedAudio,
+												'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed': !isCurrentLoading && !isCurrentPlaying && !canPlayThis,
+											}
+										)}
 										disabled
 									>
 										<Loader2 className="h-4 w-4 animate-spin" />
@@ -792,13 +831,16 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 				<button
 					onClick={handleReplayAll}
 					disabled={globalDisabled || !paragraphs.some((p, i) => p && (selectedVoices[i] || uploadedAudioUrls[i]))}
-					className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition ${!canReplayAll
-						? "bg-purple-100 text-purple-400 cursor-not-allowed"
-						: "bg-purple-600 text-white hover:bg-purple-700"
-						}`}
+					className={clsx(
+						"flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition",
+						{
+							'bg-purple-600 dark:bg-purple-700 text-white hover:bg-purple-700 dark:hover:bg-purple-600': canReplayAll,
+							'bg-purple-100 dark:bg-purple-900/30 text-purple-400 dark:text-purple-600 cursor-not-allowed': !canReplayAll,
+						}
+					)}
 					title={!paragraphs.some((p, i) => p && (selectedVoices[i] || uploadedAudioUrls[i])) ? "Add text and select voice/upload audio" : (isLoading || playingIndex !== null || isReplayingAll || loadingIndex !== null) ? "Busy..." : "Play all paragraphs sequentially"}
 				>
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"> {/* Replay Icon */}
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
 						<path fillRule="evenodd" d="M15.312 11.424a5.5 5.5 0 0 1-9.204 2.776l.71-.71a4.5 4.5 0 0 0 7.416-2.288l-.71.71a3.5 3.5 0 0 1-5.898-1.713l.71-.71a2.5 2.5 0 0 0 4.212-1.224l-.71.71a1.5 1.5 0 1 1-2.121-2.121l.71-.71-1.415-1.414-.709.709a5.5 5.5 0 0 1 8.827 3.347l-.71.71Zm-2.121-2.121a1.5 1.5 0 1 1-2.121-2.121l.71-.71 1.414 1.414-.707.707a3.5 3.5 0 0 1-4.389 1.003l.71-.71a2.5 2.5 0 0 0 3.01.717l-.71.71a1.5 1.5 0 1 1-2.121-2.121l.71-.71-1.414-1.414-.71.71a5.5 5.5 0 0 1 7.166 5.834l.71.71a1.5 1.5 0 1 1-2.122 2.121l-.71-.71.707-.707a3.5 3.5 0 0 1-1.003-4.389l.71.71a2.5 2.5 0 0 0-.717-3.01l.71-.71Z" clipRule="evenodd" />
 					</svg>
 					<span>Replay All</span>
@@ -808,7 +850,10 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 				{showStopButton && (
 					<button
 						onClick={handleStop}
-						className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md bg-red-500 text-white hover:bg-red-600 transition"
+						className={clsx(
+							"flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition",
+							'bg-red-500 dark:bg-red-600 text-white hover:bg-red-600 dark:hover:bg-red-500'
+						)}
 						title="Stop current playback or loading"
 					>
 						<Square className="h-4 w-4 fill-current" />

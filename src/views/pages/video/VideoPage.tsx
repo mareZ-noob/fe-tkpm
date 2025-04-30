@@ -8,7 +8,7 @@ import ItemModal from "@/components/modal/ItemModal";
 import { BaseVideo } from "@/interfaces/video/VideoInterface";
 import { FormatRelativeTime } from "@/utils/FormatRelativeTime";
 import VideoFileIcon from "@/components/icon/VideoFileIcon";
-import YoutubeUploadModal from "@/components/modal/YoutubeUploadModal";
+import YoutubeUploadModal from "@/components/modal/YouTubeUploadModal";
 
 const { confirm } = AntdModal;
 
@@ -211,22 +211,53 @@ const VideoPage = () => {
 	const filterComponent = (
 		<Dropdown
 			menu={{
-				items: [{ key: "all", label: "All" }, { key: "starred", label: "Starred" },],
+				items: [
+					{ key: "all", label: "All" },
+					{ key: "starred", label: "Starred" },
+				],
 				onClick: ({ key }) => setFilterOption(key),
-				selectable: true, defaultSelectedKeys: [filterOption],
-			}} >
-			<Button style={{ borderRadius: 6 }}> Filter: {filterOption === "all" ? "All" : "Starred"} </Button>
+				className: "bg-white dark:bg-gray-800 dark:border-gray-600",
+				selectable: true,
+				selectedKeys: [filterOption],
+			}}
+			overlayClassName="rounded-md shadow-lg [&_.ant-dropdown-menu-item]:text-gray-900 [&_.ant-dropdown-menu-item]:dark:text-gray-100 [&_.ant-dropdown-menu-item:hover]:bg-gray-100 [&_.ant-dropdown-menu-item:hover]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:bg-gray-100 [&_.ant-dropdown-menu-item:focus]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:ring-2 [&_.ant-dropdown-menu-item:focus]:ring-blue-500 [&_.ant-dropdown-menu-item:focus]:dark:ring-blue-400 [&_.ant-dropdown-menu-item-selected]:bg-blue-50 [&_.ant-dropdown-menu-item-selected]:dark:bg-blue-900/50 [&_.ant-dropdown-menu-item-selected]:text-blue-600 [&_.ant-dropdown-menu-item-selected]:dark:text-blue-300"
+		>
+			<Button
+				className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+			>
+				Filter: {filterOption === "all" ? "All" : "Starred"}
+			</Button>
 		</Dropdown>
 	);
 
 	const sortComponent = (
 		<Dropdown
 			menu={{
-				items: [{ key: "name-asc", label: "Name (A-Z)" }, { key: "name-desc", label: "Name (Z-A)" }, { key: "date-new", label: "Date (Newest)" }, { key: "date-old", label: "Date (Oldest)" },],
+				items: [
+					{ key: "name-asc", label: "Name (A-Z)" },
+					{ key: "name-desc", label: "Name (Z-A)" },
+					{ key: "date-new", label: "Date (Newest)" },
+					{ key: "date-old", label: "Date (Oldest)" },
+				],
 				onClick: ({ key }) => setSortOption(key),
-				selectable: true, defaultSelectedKeys: [sortOption],
-			}} >
-			<Button style={{ borderRadius: 6 }}> Sort: {sortOption === "name-asc" ? "Name (A-Z)" : sortOption === "name-desc" ? "Name (Z-A)" : sortOption === "date-new" ? "Date (Newest)" : "Date (Oldest)"} </Button>
+				className: "bg-white dark:bg-gray-800 dark:border-gray-600",
+				selectable: true,
+				selectedKeys: [sortOption],
+			}}
+			overlayClassName="rounded-md shadow-lg [&_.ant-dropdown-menu-item]:text-gray-900 [&_.ant-dropdown-menu-item]:dark:text-gray-100 [&_.ant-dropdown-menu-item:hover]:bg-gray-100 [&_.ant-dropdown-menu-item:hover]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:bg-gray-100 [&_.ant-dropdown-menu-item:focus]:dark:bg-gray-700 [&_.ant-dropdown-menu-item:focus]:ring-2 [&_.ant-dropdown-menu-item:focus]:ring-blue-500 [&_.ant-dropdown-menu-item:focus]:dark:ring-blue-400 [&_.ant-dropdown-menu-item-selected]:bg-blue-50 [&_.ant-dropdown-menu-item-selected]:dark:bg-blue-900/50 [&_.ant-dropdown-menu-item-selected]:text-blue-600 [&_.ant-dropdown-menu-item-selected]:dark:text-blue-300"
+		>
+			<Button
+				className="bg-white dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+			>
+				Sort:{" "}
+				{sortOption === "name-asc"
+					? "Name (A-Z)"
+					: sortOption === "name-desc"
+						? "Name (Z-A)"
+						: sortOption === "date-new"
+							? "Date (Newest)"
+							: "Date (Oldest)"}
+			</Button>
 		</Dropdown>
 	);
 
@@ -247,7 +278,7 @@ const VideoPage = () => {
 			filterComponent={filterComponent}
 			sortComponent={sortComponent}
 			totalItems={filteredAndSortedVideos().length}
-			// headerActions={pageHeaderActions}
+		// headerActions={pageHeaderActions}
 		>
 			<ItemGrid
 				items={filteredAndSortedVideos()}
@@ -256,15 +287,17 @@ const VideoPage = () => {
 				renderItem={(video) => (
 					<Card
 						hoverable
+						className="bg-white dark:bg-gray-800 dark:border-gray-600 shadow-lg"
 						style={{ borderRadius: 8, overflow: "hidden", height: "100%" }}
 						styles={{ body: { padding: 0, height: "100%", display: "flex", flexDirection: "column" } }}
 						onClick={() => openVideo(video)}
 					>
 						<VideoFileIcon />
-						<div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8, flexGrow: 1 }}>
+						<div className="p-3 flex flex-col gap-2 flex-grow" style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8, flexGrow: 1 }}>
 							<div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
 								<Typography.Text
 									strong
+									className="text-gray-900 dark:text-gray-100"
 									style={{
 										fontSize: 15,
 										lineHeight: 1.4,
@@ -279,13 +312,19 @@ const VideoPage = () => {
 								<Button
 									type="text"
 									size="small"
-									icon={video.starred ? <StarFilled style={{ color: "#fadb14" }} /> : <StarOutlined />}
+									icon={
+										video.starred ? (
+											<StarFilled className="text-yellow-500 dark:text-yellow-400" />
+										) : (
+											<StarOutlined className="text-gray-600 dark:text-gray-300" />
+										)
+									}
 									onClick={(e) => toggleStar(video.id, e)}
 								/>
 							</div>
 							<div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: "auto" }}>
-								<ClockCircleOutlined style={{ fontSize: 12, color: "#8c8c8c" }} />
-								<Typography.Text type="secondary" style={{ fontSize: 12 }}>
+								<ClockCircleOutlined className="text-gray-500 dark:text-gray-400" style={{ fontSize: 12, color: "#8c8c8c" }} />
+								<Typography.Text className="text-gray-500 dark:text-gray-400" type="secondary" style={{ fontSize: 12 }}>
 									{FormatRelativeTime(video.updated_at)}
 								</Typography.Text>
 							</div>
@@ -304,12 +343,20 @@ const VideoPage = () => {
 				onDelete={handleDeleteVideo}
 				onDuplicate={handleDuplicateVideo}
 				renderTitle={(video) => (
-					<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-						<VideoCameraOutlined style={{ fontSize: 14, color: "#1677ff"}} /> {video.title || "Untitled"}
+					<div className="flex items-center gap-2" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+
+						<VideoCameraOutlined className="text-blue-600 dark:text-blue-400" style={{ fontSize: 14, color: "#1677ff" }} />
+						<span className="text-gray-900 dark:text-gray-100">{video.title || "Untitled"}</span>
 						<Button
 							type="text"
 							size="small"
-							icon={video.starred ? <StarFilled style={{ color: "#fadb14" }} /> : <StarOutlined />}
+							icon={
+								video.starred ? (
+									<StarFilled className="text-yellow-500 dark:text-yellow-400" />
+								) : (
+									<StarOutlined className="text-gray-600 dark:text-gray-300" />
+								)
+							}
 							onClick={(e) => {
 								e.stopPropagation();
 								toggleStar(video.id, e);
