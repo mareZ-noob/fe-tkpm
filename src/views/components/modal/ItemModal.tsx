@@ -107,16 +107,28 @@ const ItemModal = <T extends { updated_at: string },>({
 					<Form form={form} layout="vertical" style={{ marginTop: isEditing ? 8 : 0 }}>
 						{isEditing ? (
 							<>
-								<Form.Item name="title" label="Title" rules={[{ required: true, message: "Title cannot be empty" }]}>
-									<Input placeholder="Enter title" />
+								<Form.Item
+									name="title"
+									label={<span className="dark:text-gray-200">Title</span>}
+									rules={[{ required: true, message: "Title cannot be empty" }]}
+								>
+									<Input
+										placeholder="Enter title"
+										className="dark:bg-slate-700 dark:text-gray-200 dark:placeholder-gray-400 dark:border-slate-600"
+									/>
 								</Form.Item>
 								{!hideContentField && (
 									<Form.Item
 										name="content"
-										label="Content"
+										label={<span className="dark:text-gray-200">Content</span>}
 										rules={[{ required: true, message: "Content cannot be empty" }]}
 									>
-										<TextArea rows={12} placeholder="Enter content" style={{ resize: "none" }} />
+										<TextArea
+											rows={12}
+											placeholder="Enter content"
+											style={{ resize: "none" }}
+											className="dark:bg-slate-700 dark:text-gray-200 dark:placeholder-gray-400 dark:border-slate-600"
+										/>
 									</Form.Item>
 								)}
 							</>

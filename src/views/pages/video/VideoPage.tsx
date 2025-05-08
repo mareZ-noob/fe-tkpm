@@ -187,7 +187,6 @@ const VideoPage = () => {
 		}
 	};
 
-
 	const showGenericYoutubeUploadModal = () => {
 		setYouTubeInitialData(null);
 		setIsYouTubeModalVisible(true);

@@ -8,9 +8,11 @@ interface PromptStepProps {
 	triggerFetchSummary: boolean;
 	setIsGeneratingScript: (isLoading: boolean) => void;
 	onGenerationComplete: (success: boolean, script: string | null, errorMsg?: string | null) => void;
+	setModel: (model: string) => void;
+	setLanguageOutput: (language: string) => void;
 }
 
-const PromptStep = ({ setTextContent, triggerFetchSummary, setIsGeneratingScript, onGenerationComplete }: PromptStepProps) => {
+const PromptStep = ({ setTextContent, triggerFetchSummary, setIsGeneratingScript, onGenerationComplete, setModel, setLanguageOutput }: PromptStepProps) => {
 	const [keyword, setKeyword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -114,6 +116,7 @@ const PromptStep = ({ setTextContent, triggerFetchSummary, setIsGeneratingScript
 		try {
 			const summaryResult = await PromptService.getScript(payload);
 			setTextContent(summaryResult);
+			setModel(selectedModel);
 			onGenerationComplete(true, summaryResult);
 		} catch (err: any) {
 			console.error("Error generating script:", err);
@@ -125,6 +128,7 @@ const PromptStep = ({ setTextContent, triggerFetchSummary, setIsGeneratingScript
 			onGenerationComplete(false, null, message);
 		} finally {
 			setLoading(false);
+			setLanguageOutput(language);
 			handleFetchComplete();
 		}
 	}, [keyword, style, age, language, tone, selectedProvider, selectedModel, setTextContent, setIsGeneratingScript, onGenerationComplete]);

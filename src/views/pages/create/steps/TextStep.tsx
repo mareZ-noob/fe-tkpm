@@ -10,11 +10,12 @@ const TextStep = ({
 	setTextContent,
 }: TextStepProps) => {
 	const [paragraphs, setParagraphs] = useState<string[]>([]);
+	const MAX_PARAGRAPHS = 10;
 
 	useEffect(() => {
-		const split = textContent.split(/\n\n+/).map(p => p.trim()).filter(p => p).slice(0, 4);
+		const split = textContent.split(/\n\n+/).map(p => p.trim()).filter(p => p).slice(0, MAX_PARAGRAPHS);
 		const padded = [...split];
-		while (padded.length < 4) padded.push("");
+		while (padded.length < MAX_PARAGRAPHS) padded.push("");
 		setParagraphs(padded);
 	}, [textContent]);
 

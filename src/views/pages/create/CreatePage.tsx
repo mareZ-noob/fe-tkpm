@@ -7,6 +7,8 @@ const CreatePage = () => {
 	const initialContent = location.state?.initialContent ?? "";
 	const initialStep = location.state?.initialStep ?? 1;
 
+	// const tempInitialStep = 6;
+
 	return (
 		<PageLayout
 			title="Video"
@@ -14,6 +16,8 @@ const CreatePage = () => {
 		>
 			<div className="bg-purple-50 dark:bg-slate-900 min-h-full">
 				<VideoEditor
+					// initialContent={initialContent}
+					// initialStep={initialStep}
 					initialContent={initialContent}
 					initialStep={initialStep}
 				/>

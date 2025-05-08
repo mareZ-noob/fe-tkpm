@@ -77,6 +77,7 @@ const DashboardPage = () => {
 					fetchYouTubeVideos();
 				} else {
 					setIsLoadingYouTubeVideos(false);
+					await YoutubeService.logout();
 					setYoutubeVideos([]);
 				}
 			} catch (error: any) {
@@ -109,7 +110,6 @@ const DashboardPage = () => {
 				setIsLoadingYouTubeVideos(false);
 			}
 		};
-
 
 		fetchDocuments();
 		fetchVideos();
@@ -146,10 +146,10 @@ const DashboardPage = () => {
 
 		if (isYouTubeAuthenticated === false) {
 			return (
-				<div className="bg-white rounded-lg border shadow-sm p-6 flex flex-col items-center text-center">
+				<div className="bg-white rounded-lg border shadow-sm p-6 flex flex-col items-center text-center dark:bg-gray-800 dark:border-gray-700">
 					<Youtube className="h-12 w-12 text-red-500 mb-4" />
 					<h3 className="text-lg font-semibold mb-2">Connect to YouTube</h3>
-					<p className="text-sm text-gray-600 mb-4">
+					<p className="text-sm text-gray-600 mb-4 bg-white dark:bg-gray-800 dark:text-gray-100" >
 						Link your YouTube account to view your video statistics and manage uploads directly from the dashboard.
 					</p>
 					{youTubeVideoError && (

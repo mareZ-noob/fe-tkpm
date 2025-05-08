@@ -7,8 +7,6 @@ import clsx from "clsx";
 
 interface AudioStepProps {
 	textContent: string;
-	setTextContent: (text: string) => void;
-	onNext: () => void;
 }
 
 export interface AudioStepHandle {
@@ -38,7 +36,7 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 	const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
 	const speedOptions = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2];
-	const MAX_PARAGRAPHS = 4;
+	const MAX_PARAGRAPHS = 10;
 	const globalDisabled = isLoading || isGenerating || isReplayingAll || playingIndex !== null || loadingIndex !== null;
 
 	// Split text, reset voices/speeds/uploads
@@ -312,7 +310,7 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 			let audioUrl: string | null = null;
 			let isUploadedAudio = false;
 
-			// --- Determine Audio Source ---
+			// Determine Audio Source
 			if (hasUploadedAudio) {
 				audioUrl = uploadedAudioUrls[index];
 				isUploadedAudio = true;
@@ -333,7 +331,7 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 				throw new Error("Could not determine audio source.");
 			}
 
-			// --- Setup Audio Element ---
+			// Setup Audio Element
 			if (!audioRef.current) {
 				audioRef.current = new Audio();
 			}
@@ -344,7 +342,7 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 				URL.revokeObjectURL(currentAudio.src);
 			}
 
-			// --- Assign Event Handlers ---
+			// Assign Event Handlers
 			// Remove previous listeners to avoid leaks or double triggers
 			currentAudio.onplay = null;
 			currentAudio.onended = null;
@@ -399,7 +397,7 @@ const AudioStep = forwardRef<AudioStepHandle, AudioStepProps>(({ textContent }, 
 				}
 			};
 
-			// --- Play ---
+			// Play
 			currentAudio.src = audioUrl;
 			// Playback Rate only works reliably for TTS. For uploaded, it depends on browser/encoding.
 			// We could try setting it, but it might not work. Speed dropdown is disabled for uploads UI-wise.
