@@ -273,7 +273,7 @@ const YouTubeUploadModal: React.FC<YouTubeUploadModalProps> = ({
 			destroyOnClose
 		>
 			<div style={{ marginBottom: 20, paddingBottom: 20, borderBottom: '1px solid #f0f0f0' }}>
-				<Title level={5}>Authentication</Title>
+				<Title level={5} className="dark:text-gray-100">Authentication</Title>
 				{isLoadingAuthStatus ? (<Text type="secondary">Checking YouTube authentication status...</Text>) : (
 					<>
 						{authError && <Alert message={authError} type="error" showIcon style={{ marginBottom: 15 }} closable onClose={() => setAuthError(null)} />}
@@ -315,7 +315,7 @@ const YouTubeUploadModal: React.FC<YouTubeUploadModalProps> = ({
 						{uploadSource === 'file' ? (
 							<Form.Item
 								name="file"
-								label="Video File"
+								label={<span className="dark:text-gray-200">Video File</span>}
 								validateTrigger={['onChange', 'onBlur']}
 								rules={[{ required: true, validator: async () => (fileList.length > 0 ? Promise.resolve() : Promise.reject(new Error('Please select a video file!'))) }]}
 								help="Select the video file you want to upload."
@@ -327,7 +327,7 @@ const YouTubeUploadModal: React.FC<YouTubeUploadModalProps> = ({
 						) : (
 							<Form.Item
 								name="videoUrl"
-								label="Video URL"
+								label={<span className="dark:text-gray-200">Video URL</span>}
 								rules={[{ required: true, message: 'Video URL is required!' }, { type: 'url', warningOnly: true, message: 'Input does not look like a valid URL.' }, { whitespace: true, message: 'URL cannot be empty space!' }]}
 								help="Enter the public URL of the video."
 							>
@@ -339,25 +339,25 @@ const YouTubeUploadModal: React.FC<YouTubeUploadModalProps> = ({
 
 				<Form.Item
 					name="title"
-					label="Video Title"
+					label={<span className="dark:text-gray-200">Video Title</span>}
 					rules={[{ required: true, message: 'Please input the video title!' }, { whitespace: true, message: 'Title cannot be empty space!' }]}
 				>
-					<Input placeholder="My Awesome Video" />
+					<Input className="dark:bg-slate-700 dark:text-gray-200 dark:placeholder-gray-400 dark:border-slate-600" placeholder="My Awesome Video" />
 				</Form.Item>
 
-				<Form.Item name="description" label="Description">
-					<TextArea rows={3} placeholder="A short description of your video (optional)" />
+				<Form.Item name="description" label={<span className="dark:text-gray-200">Description</span>} >
+					<TextArea className="dark:bg-slate-700 dark:text-gray-200 dark:placeholder-gray-400 dark:border-slate-600" rows={3} placeholder="A short description of your video (optional)" />
 				</Form.Item>
 
-				<Form.Item name="tags" label="Tags" help="Comma-separated tags (e.g., tech, review, gaming)">
-					<Input placeholder="tag1, tag2, tag3 (optional)" />
+				<Form.Item name="tags" label={<span className="dark:text-gray-200">Tags</span>} help={<span className="dark:text-gray-400">Comma-separated tags (e.g., tech, review, gaming)</span>}>
+					<Input className="dark:bg-slate-700 dark:text-gray-200 dark:placeholder-gray-400 dark:border-slate-600" placeholder="tag1, tag2, tag3 (optional)" />
 				</Form.Item>
 
-				<Form.Item name="privacyStatus" label="Privacy Status" rules={[{ required: true, message: 'Please select a privacy status!' }]} >
-					<Select>
-						<Option value="private">Private</Option>
-						<Option value="unlisted">Unlisted</Option>
-						<Option value="public">Public</Option>
+				<Form.Item name="privacyStatus" label={<span className="dark:text-gray-200">Privacy Status</span>} rules={[{ required: true, message: 'Please select a privacy status!' }]} >
+					<Select className="dark:bg-slate-700 dark:text-gray-200 dark:placeholder-gray-400 dark:border-slate-600">
+						<Option value="private">{<span className="dark:text-gray-400">Private</span>}</Option>
+						<Option value="unlisted">{<span className="dark:text-gray-400">Unlisted</span>}</Option>
+						<Option value="public">{<span className="dark:text-gray-400">Public</span>}</Option>
 					</Select>
 				</Form.Item>
 
@@ -374,7 +374,7 @@ const YouTubeUploadModal: React.FC<YouTubeUploadModalProps> = ({
 				<Form.Item style={{ textAlign: 'right', marginTop: 24, marginBottom: 0 }}>
 					<Space>
 						<Button onClick={onClose} disabled={uploading}> Cancel </Button>
-						<Button type="primary" htmlType="submit" loading={uploading} disabled={uploading || !isAuthenticated || isAuthenticating || isLoadingAuthStatus} >
+						<Button className="dark:bg-blue-600 dark:text-white" type="primary" htmlType="submit" loading={uploading} disabled={uploading || !isAuthenticated || isAuthenticating || isLoadingAuthStatus} >
 							{uploading ? 'Uploading...' : 'Start Upload'}
 						</Button>
 					</Space>
